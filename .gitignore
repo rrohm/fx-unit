@@ -1,0 +1,14 @@
+aeFXUnit/build/**/*
+aeFXUnitTest/build/**/*
+aeFXUnit/nbproject/private/**/*
+aeFXUnitTest/nbproject/private/**/*
+aeFXUnitTest/dist/web-files/**/*
+mounts.sh
+aeFXUnit/dist/README.TXT
+aeFXUnit/dist/aeFXUnit.jnlp
+aeFXUnit/dist/web-files/
+aeFXUnitTest/aeFXActionTest.log
+aeFXUnit/nbproject/UPDATED.TXT
+aeFXUnitTest/nbproject/UPDATED.TXT
+aeFXUnit/.svn/
+*~
