@@ -1,6 +1,6 @@
 # fx-unit
 
-fx-unit wants to make unit testing JavaFX controllers simple as simple as possible: 
+fx-unit wants to make unit testing JavaFX controllers simple as possible: 
 + test early
 + write tests with at most no overhead
 + no complex dependencies
