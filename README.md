@@ -3,9 +3,8 @@
 fx-unit wants to make unit testing JavaFX controllers simple as possible: 
 + test early
 + write tests with at most no overhead
-+ no complex dependencies
++ no complex dependencies for testing - currently none at all
 + no dependencies in the application, at any time.
-+ a minimum of dependencies for testing, currently none.
 
 ## Current State of the Project
 
