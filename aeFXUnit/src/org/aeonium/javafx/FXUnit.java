@@ -24,7 +24,7 @@
  *  permits.
  * 
  *
- *  2015 Aeonium Software Systems, Robert Rohm.
+ *  2016 Aeonium Software Systems, Robert Rohm.
  */
 package org.aeonium.javafx;
 
@@ -70,6 +70,11 @@ public class FXUnit {
     } catch (InterruptedException ex) {
       Thread.currentThread().interrupt();
     }
+  }
+
+  public static void init(Application instance) {
+    DriverApp.setApplication(instance);
+    Application.launch(DriverApp.class, new String[0]);
   }
 
 }

@@ -31,14 +31,25 @@ package org.aeonium.javafx;
 import javafx.scene.Node;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextField;
 import javafx.stage.Window;
 
 /**
+ * Assertions for JavaFX UI testing.
  *
  * @author Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;
  */
 public class AssertFX {
 
+  public static void assertFocused(Node node) {
+    if (node == null) {
+      throw new AssertionError("Node is null");
+    }
+    if (node.isFocused() != true) {
+      throw new AssertionError("Node " + node + " should be focused, but is not.");
+    }
+  }
+  
   public static void assertNotShowing(Window window) {
     if (window == null) {
       throw new AssertionError("Window is null");
@@ -90,5 +101,4 @@ public class AssertFX {
       throw new AssertionError("Node " + node + " should be visible, but is not.");
     }
   }
-
 }

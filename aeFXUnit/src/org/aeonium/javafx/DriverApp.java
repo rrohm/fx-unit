@@ -24,49 +24,49 @@
  *  permits.
  * 
  *
- *  2015 Aeonium Software Systems, Robert Rohm.
+ *  2016 Aeonium Software Systems, Robert Rohm.
  */
 package org.aeonium.javafx;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
-import javafx.geometry.Insets;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 /**
- * Dummy Application, only for JavaFX framework initialization.
+ * This application is used to initialize the JavaFX framework. 
  *
  * @author Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;
  */
-public class MyDummyApp extends Application {
+public class DriverApp extends Application {
 
-  /**
-   * The aeFXUnit dummy app window.
-   */
-  private static Stage mainStage;
+  private static final Logger LOG = Logger.getLogger(DriverApp.class.getName());
 
-  @Override
-  public void start(Stage stage) throws Exception {
+  private static Application app;
 
-    VBox box = new VBox(10.0, new Label("aeFXUnit Test running ..."), new ProgressIndicator(-1));
-    box.setPadding(new Insets(10.0));
-
-    Scene scene = new Scene(box);
-    stage.setTitle("JavaFX UnitTest dummy.");
-    stage.setScene(scene);
-    stage.initStyle(StageStyle.UNDECORATED);
-    stage.show();
+  public static void setApplication(Application fxApp) {
+    LOG.log(Level.INFO, "setApplication: {0}", fxApp);
+    app = fxApp;
   }
 
-  /**
-   * @param args the command line arguments
-   */
-  public static void main(String[] args) {
-    launch(args);
+  @Override
+  public void init() throws Exception {
+    LOG.info("init");
+    try {
+      app.init();
+    } catch (Exception exception) {
+      LOG.log(Level.SEVERE, exception.getMessage(), exception);
+    }
+  }
+
+  @Override
+  public void start(Stage primaryStage) throws Exception {
+    LOG.info("start");
+    try {
+      app.start(primaryStage);
+    } catch (Exception exception) {
+      LOG.log(Level.SEVERE, exception.getMessage(), exception);
+    }
   }
 
 }

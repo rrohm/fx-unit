@@ -42,15 +42,22 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.Stage;
 
 /**
+ * A helper class for UI testing.
  *
  * @author Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;
  */
 public final class FXHelper {
-  
+
   public static int DELAY = 200;
-  
+
+  /**
+   * Clear the text of a Labeled component, i.e., set it to an empty string.
+   *
+   * @param labeled The component, must be an instance or descendant of Labeled.
+   */
   public static void clearText(Labeled labeled) {
     invokeOnFXThread(() -> {
       labeled.setText("");
@@ -61,9 +68,9 @@ public final class FXHelper {
   /**
    * Find a tab sheet by ID in the given tab pane.
    *
-   * @param tabPane
-   * @param id
-   * @return
+   * @param tabPane The tab pane.
+   * @param id The id.
+   * @return The tab with the given ID.
    */
   public static Tab findTab(TabPane tabPane, String id) {
     ObservableList<Tab> tabs = tabPane.getTabs();
@@ -73,6 +80,29 @@ public final class FXHelper {
       }
     }
     return null;
+  }
+
+  /**
+   * Request the focus for a given node and ensure that this happens on the
+   * JavaFX Application Thread. After this, delay further actions by the
+   * specified delay time {@link FXHelper#DELAY}
+   *
+   * @param node The node to request the focus for.
+   */
+  public static void focus(Node node) {
+
+    invokeOnFXThread(() -> {
+      node.requestFocus();
+    });
+    doDelay();
+  }
+
+  public static void invokeOnFXThread(final Runnable runnable) {
+    if (Platform.isFxApplicationThread()) {
+      runnable.run();
+    } else {
+      Platform.runLater(runnable);
+    }
   }
 
   /**
@@ -102,6 +132,22 @@ public final class FXHelper {
     }
     tabPane.getSelectionModel().select(findTab);
     doDelay();
+  }
+
+  /**
+   * Shut down a test stage, i.e., hide it an release it's content.
+   *
+   * @param stage
+   */
+  public static void shutdownStage(Stage stage) {
+    if (stage == null) {
+      return;
+    }
+    FXHelper.invokeOnFXThread(() -> {
+      stage.hide();
+      stage.setScene(null);
+//      scene.setRoot(null);
+    });
   }
 
   /**
@@ -140,14 +186,6 @@ public final class FXHelper {
     doDelay();
   }
 
-  public static void invokeOnFXThread(final Runnable runnable) {
-    if (Platform.isFxApplicationThread()) {
-      runnable.run();
-    } else {
-      Platform.runLater(runnable);
-    }
-  }
-
   private static void doDelay() {
     if (DELAY > 0) {
       if (!Platform.isFxApplicationThread()) {
@@ -159,4 +197,5 @@ public final class FXHelper {
       }
     }
   }
+
 }
