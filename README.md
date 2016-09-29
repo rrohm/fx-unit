@@ -6,7 +6,7 @@ fx-unit wants to make unit testing JavaFX controllers simple as possible:
 + no complex dependencies for testing - currently none at all
 + no dependencies in the application, at any time.
 
-At present, it offerst theses additional assertions: 
+At present, it offers these additional assertions: 
 
 ```java
 assertFocused(javafx.scene.Node node);
