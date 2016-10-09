@@ -9,12 +9,12 @@ fx-unit wants to make unit testing JavaFX controllers simple as possible:
 At present, it offers these additional assertions: 
 
 ```java
-assertFocused(javafx.scene.Node node);
-assertNotShowing(javafx.stage.Window window)
-assertNotVisible(javafx.scene.Node node)
-assertSelected(javafx.scene.control.TabPane tabPane, java.lang.String id)
-assertShowing(javafx.stage.Window window)
-assertVisible(javafx.scene.Node node)
+AssertFX.assertFocused(javafx.scene.Node node);
+AssertFX.assertNotShowing(javafx.stage.Window window)
+AssertFX.assertNotVisible(javafx.scene.Node node)
+AssertFX.assertSelected(javafx.scene.control.TabPane tabPane, java.lang.String id)
+AssertFX.assertShowing(javafx.stage.Window window)
+AssertFX.assertVisible(javafx.scene.Node node)
 ```
 
 # About the Project
