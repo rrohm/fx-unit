@@ -25,3 +25,11 @@ If you are interested, drop a message!
 Within the next day, further documentation follows, and any comments are welcome.
 
 The project is open source, the code is made available under LGPL 3.
+
+
+# Getting started
+
+The project is currently beeing developed with NetBeans IDE 8.2 and Ant, but if you just want to use the library for testing your JavaFX project, you may simply download or clone the repository. Building with Ant is not necessary, since currently the project contains the library jar in the folder fx-unit/aeFXUnit/dist.
+
+
+```
