@@ -12,3 +12,8 @@ aeFXUnit/nbproject/UPDATED.TXT
 aeFXUnitTest/nbproject/UPDATED.TXT
 aeFXUnit/.svn/
 *~
+.*
+aeFXUnit/build-with-sonar.sh
+aeFXUnit/mvn
+aeFXUnit/sonar-project.properties
+aeFXUnit/jacoco*

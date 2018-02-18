@@ -1,1 +1,3 @@
-org.aeonium.javafx
+org.aeonium.fxunit
+org.aeonium.fxunit.i18n
+org.aeonium.fxunit.matchers
