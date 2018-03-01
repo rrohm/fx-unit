@@ -28,7 +28,7 @@ public static Matcher<Node> isNotVisible()
 The fx-unit project is currently in a proof-of-concept phase. It is used in several internal projects at Aeonium Software Systems, in order to evaluate the aproach. 
 
 If you are interested, drop a message!
-Within the next day, further documentation follows, and any comments are welcome.
+Within the next days, further documentation follows, and any comments are welcome.
 
 The project is open source, the code is made available under LGPL 3.
 
