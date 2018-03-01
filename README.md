@@ -17,6 +17,12 @@ AssertFX.assertShowing(javafx.stage.Window window)
 AssertFX.assertVisible(javafx.scene.Node node)
 ```
 
+Also, Hamcrest matchers will be provided. At present, there are the first two candidates: 
+```java
+public static Matcher<Node> isVisible()
+public static Matcher<Node> isNotVisible()
+``` 
+
 # About the Project
 
 The fx-unit project is currently in a proof-of-concept phase. It is used in several internal projects at Aeonium Software Systems, in order to evaluate the aproach. 
