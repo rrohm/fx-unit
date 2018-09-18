@@ -96,7 +96,7 @@ public final class FXHelper {
    * Ensure that the given runnable gets executed on the JavaFX applcation
    * thread.
    *
-   * @param runnable
+   * @param runnable Runnable that contains the code to be executed on the JavaFX thread.
    */
   public static void invokeOnFXThread(final Runnable runnable) {
     if (runnable == null) {
