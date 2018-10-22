@@ -1,10 +1,12 @@
 # fx-unit
 
-fx-unit wants to make unit testing JavaFX controllers simple as possible: 
+fx-unit aims to be a utility for unit testing JavaFX controllers as well as integration testing JavaFX UIs, as simple as possible: 
 + test early
 + write tests with at most no overhead
-+ no complex dependencies for testing - currently none at all
-+ no dependencies in the application, at any time.
++ simplified bootstrapping for you test setups
++ no complex dependencies for testing - currently no dependencies at all
++ no dependencies and no modifications in the application, at any time
++ no more hassles getting the threading right
 
 At present, it offers these additional assertions: 
 
@@ -35,7 +37,9 @@ The project is open source, the code is made available under LGPL 3.
 
 # Getting started
 
-The project is currently beeing developed with NetBeans IDE 8.2 and Ant, but if you just want to use the library for testing your JavaFX project, you may simply download or clone the repository. Building with Ant is not necessary, since currently the project contains the library jar in the folder fx-unit/aeFXUnit/dist.
+At present, the repository contains not only the source code but also the binary distribution. So, just clone or download the repository and have a look at fx-unit/aeFXUnit/dist.
+
+The project is currently beeing developed with NetBeans IDE 8.2 and Ant, but if you just want to use the library for testing your JavaFX project, you may simply download or clone the repository. 
 
 
 ```
