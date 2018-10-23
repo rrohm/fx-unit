@@ -18,10 +18,17 @@
  */
 package org.aeonium.fxunit;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  * Main class of the framework, provides only the static initializer method.
@@ -30,6 +37,42 @@ import javafx.stage.Stage;
  */
 public class FXUnit {
 
+  private static Object controller;
+  private static Parent root;
+  private static Stage stage;
+
+  /**
+   * Returns the stage of the UI under test, after the FXML UI has been loaded
+   * and displayed with the {@link #show(java.net.URL) } method.
+   *
+   * @return
+   */
+  public static Stage getStage() {
+    return stage;
+  }
+
+  /**
+   * Returns the controller of the FXML UI under test, after the FXML UI has
+   * been loaded with the {@link #load(java.net.URL)} method or displayed using
+   * {@link #show(java.net.URL)};
+   *
+   * @param <T> The type of the controller.
+   * @return The controller.
+   */
+  public static <T> T getController() {
+    return (T) controller;
+  }
+
+  /**
+   * Returns the root node of the UI under test. Load the UI with the {@link #load(java.net.URL)
+   * } or the {@link #show(java.net.URL) } method in order to use this getter.
+   *
+   * @return
+   */
+  public static Parent getRoot() {
+    return root;
+  }
+
   /**
    * Hide implicit ctor.
    */
@@ -37,7 +80,6 @@ public class FXUnit {
     // no op
   }
 
-  
   /**
    * Initialize the JavaFX application framework - necessary for testing JavaFX
    * GUIs.
@@ -56,6 +98,54 @@ public class FXUnit {
     } catch (InterruptedException ex) {
       Logger.getLogger(FXHelper.class.getName()).log(Level.INFO, null, ex);
       Thread.currentThread().interrupt();
+    }
+  }
+
+  public static void load(URL url) {
+    try {
+      FXMLLoader loader = new FXMLLoader(url);
+      loader.load();
+      controller = loader.getController();
+      root = loader.getRoot();
+
+    } catch (IOException ex) {
+      Logger.getLogger(FXUnit.class.getName()).log(Level.SEVERE, null, ex);
+      throw new RuntimeException(ex);
+    }
+  }
+
+  /**
+   * Load an FXML UI into a new (undecorated) stage and show it. This method
+   * internally uses {@link #load(java.net.URL) } which sets the references to
+   * the current {@link #getController() controller} and the current
+   * {@link #getRoot() root node}.
+   *
+   * @param url URL of the FXML file.
+   */
+  public static void show(URL url) {
+    Platform.runLater(() -> {
+      load(url);
+      stage = new Stage(StageStyle.UNDECORATED);
+      stage.setTitle("FXUnit testing " + getShortFilenameFromURL(url));
+      Scene scene = new Scene(root);
+      stage.setScene(scene);
+      stage.show();
+    });
+
+    try {
+      Thread.sleep(1000);
+    } catch (InterruptedException ex) {
+      Logger.getLogger(FXUnit.class.getName()).log(Level.SEVERE, null, ex);
+      Thread.currentThread().interrupt();
+    }
+  }
+
+  private static String getShortFilenameFromURL(URL url) {
+    final String filename = url.getFile();
+    if (filename.contains("/")) {
+      return filename.substring(filename.lastIndexOf("/") + 1);
+    } else {
+      return filename;
     }
   }
 

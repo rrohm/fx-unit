@@ -18,13 +18,20 @@
  */
 package org.aeonium.fxunit;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.aeonium.fxunit.testUI.FXMLController;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -37,6 +44,8 @@ import org.junit.Test;
  * @author Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;
  */
 public class FXUnitTest {
+
+  private boolean isToolkitInitialized = false;
 
   public FXUnitTest() {
   }
@@ -73,15 +82,63 @@ public class FXUnitTest {
       testStage.hide();
     });
   }
-//
-//  /**
-//   * Test of shutdown method, of class FXUnit.
-//   */
-//  @Test
-//  public void testShutdown() {
-//    System.out.println("shutdown");
-//    FXUnit.shutdown();
-//  }
-//
 
+  @Test
+  public void testLoad() {
+    System.out.println("load");
+    initializeToolkit();
+
+    FXUnit.load(FXMLController.class.getResource("FXML.fxml"));
+    assertNotNull(FXUnit.getController());
+    assertNotNull(FXUnit.getRoot());
+    assertNull(FXUnit.getStage());
+  }
+
+  /**
+   * {@link FXUnit#show(java.net.URL)} loads an FXML file and initializes the
+   * controller, the stage and the root node.
+   */
+  @Test
+  public void testShow() {
+    System.out.println("show");
+    initializeToolkit();
+
+    FXUnit.show(FXMLController.class.getResource("FXML.fxml"));
+    assertNotNull(FXUnit.getController());
+    assertNotNull(FXUnit.getStage());
+    assertNotNull(FXUnit.getRoot());
+  }
+
+  private void initializeToolkit() {
+    if (!isToolkitInitialized) {
+      Thread t = new Thread("FXUnit Init Thread") {
+        @Override
+        public void run() {
+          isToolkitInitialized = true;
+          Application.launch(FXUnitApp.class, new String[0]);
+        }
+      };
+      t.setDaemon(true);
+      t.start();
+      try {
+        Thread.sleep(1000);
+      } catch (InterruptedException ex) {
+        Logger.getLogger(FXUnitTest.class.getName()).log(Level.INFO, null, ex);
+        Thread.currentThread().interrupt();
+      }
+    }
+  }
+
+  /**
+   * Test of shutdown method, of class FXUnit, currently only adding delay time.
+   */
+  @Test
+  public void testShutdown() {
+    System.out.println("shutdown");
+    long timeBefore = System.currentTimeMillis();
+    FXUnit.shutdown();
+    long timeAfter = System.currentTimeMillis();
+
+    assertTrue("Delay time >= 1000 ms", timeAfter >= timeBefore + 1000);
+  }
 }

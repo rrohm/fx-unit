@@ -125,6 +125,14 @@ public class FXHelperTest {
     FXHelper.clearText(labeled);
     assertEquals("", labeled.getText());
   }
+ 
+  @Test
+  public void testDelay(){
+    int delay = FXHelper.getDelay();
+    final int delta = 100;
+    FXHelper.setDelay(delay + delta);
+    assertEquals(delay + delta, FXHelper.getDelay());
+  }
 
   /**
    * Test of findTab method, of class FXHelper.
@@ -384,11 +392,28 @@ public class FXHelperTest {
    */
   @Test
   public void testShutdownStage_null() {
-    System.out.println("shutdownStage");
-    Stage stage = null;
-    FXHelper.shutdownStage(stage);
+    System.out.println("shutdownStage null");
+    Stage testStage = null;
+    FXHelper.shutdownStage(testStage);
 
     assertTrue("Null input gets ignored.", true);
+  }
+  
+  @Test
+  public void testShutdownStage() throws Exception {
+    System.out.println("shutdownStage");
+    final CountDownLatch latch = new CountDownLatch(1);
+    Platform.runLater(() -> {
+      stage = new Stage();
+      stage.setScene(new Scene(new VBox(new Label("Shutdown stage ..."))));
+      latch.countDown();
+    });
+    latch.await();
+    FXHelper.shutdownStage(stage);
+
+    Thread.sleep(500);
+    assertFalse(stage.isShowing());
+    assertNull(stage.getScene());
   }
 
   /**
