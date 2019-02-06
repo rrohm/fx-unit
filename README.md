@@ -37,9 +37,7 @@ The project is open source, the code is made available under LGPL 3.
 
 # Getting started
 
-At present, the repository contains not only the source code but also the binary distribution. So, just clone or download the repository and have a look at fx-unit/aeFXUnit/dist.
-
-The project is currently beeing developed with NetBeans IDE 8.2 and Ant, but if you just want to use the library for testing your JavaFX project, you may simply download or clone the repository. 
+The project is a simple Maven project. Just download and unpack it, or clone it. Go to the project directory and issue a mvn clean install at the console. After that, you can use it as a dependency from the local Maven repository.
 
 
 ```
