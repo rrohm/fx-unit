@@ -118,4 +118,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <description>Utilities for unit testing JavaFX UI controllers and integration testing FXML GUIs.</description>
 </project>

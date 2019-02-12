@@ -34,6 +34,8 @@ import javafx.scene.control.Labeled;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.junit.After;
@@ -467,6 +469,80 @@ public class FXHelperTest {
     Character c = 'O';
     FXHelper.typeKey(target, c);
     assertEquals(String.valueOf(c), target.getText());
+  }
+  
+  @Test(expected = FXUnitException.class)
+  public void testTypeKey_Node_KeyCode_Null() throws InterruptedException {
+    System.out.println("typeKey keycode null");
+
+    TextField target = new TextField();
+
+    final CountDownLatch latch = new CountDownLatch(1);
+    
+    Platform.runLater(() -> {
+      Scene scene = new Scene(new VBox(target));
+      stage.setScene(scene);
+      latch.countDown();
+    });
+
+    latch.await();
+    assertEquals("", target.getText());
+    
+    String t = "O";
+    KeyCode nullCode = null;
+    FXHelper.typeKey(target, nullCode);
+    assertEquals(t, target.getText());
+  }
+
+  @Test
+  public void testTypeKey_Node_KeyCode_CharUpperCase() throws InterruptedException {
+    System.out.println("typeKey keycode upperCase");
+
+    TextField target = new TextField();
+
+    final CountDownLatch latch = new CountDownLatch(1);
+    
+    Platform.runLater(() -> {
+      Scene scene = new Scene(new VBox(target));
+      stage.setScene(scene);
+      latch.countDown();
+    });
+
+    latch.await();
+    assertEquals("", target.getText());
+    
+    String t = "O";
+    FXHelper.typeKey(target, KeyCode.O);
+    assertEquals(t, target.getText());
+  }
+  
+  @Test
+  public void testTypeKey_Node_KeyCode_NonChar() throws InterruptedException {
+    System.out.println("typeKey keycode nonchar");
+
+    BooleanProperty enterTyped = new SimpleBooleanProperty(false);
+    TextField target = new TextField();
+    target.addEventHandler(KeyEvent.KEY_PRESSED, (event) -> {
+      if (event.getCode().equals(KeyCode.ENTER)) {
+        enterTyped.set(true);
+      }
+    });
+
+    final CountDownLatch latch = new CountDownLatch(1);
+    
+    Platform.runLater(() -> {
+      Scene scene = new Scene(new VBox(target));
+      stage.setScene(scene);
+      latch.countDown();
+    });
+
+    latch.await();
+    final String emptyString = "";
+    assertEquals(emptyString, target.getText());
+    
+    FXHelper.typeKey(target, KeyCode.ENTER);
+    assertEquals(emptyString, target.getText());
+    assertTrue(enterTyped.get());
   }
 
 }

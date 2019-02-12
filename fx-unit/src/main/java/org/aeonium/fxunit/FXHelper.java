@@ -96,7 +96,8 @@ public final class FXHelper {
    * Ensure that the given runnable gets executed on the JavaFX applcation
    * thread.
    *
-   * @param runnable Runnable that contains the code to be executed on the JavaFX thread.
+   * @param runnable Runnable that contains the code to be executed on the
+   * JavaFX thread.
    */
   public static void invokeOnFXThread(final Runnable runnable) {
     if (runnable == null) {
@@ -176,7 +177,8 @@ public final class FXHelper {
 
   /**
    * Send key events to the target node that simulate the typing of the given
-   * character.
+   * character, i.e., send a sequence of KEY_PRESSED-KEY_TYPED-KEY_RELEASED
+   * events.
    *
    * @param target The target node
    * @param c The character
@@ -198,7 +200,33 @@ public final class FXHelper {
   }
 
   /**
-   * Sleep for n milliseconds specified by {@link #delay} if NOT executing on
+   * Send key events to the target node that simulate the typing of the given
+   * key. Use this method for all keys that do not represent a single character.
+   * Characters are represented in lower case.
+   *
+   * @param target The targe node.
+   * @param keyCode The keyCode of the key.
+   */
+  public static void typeKey(Node target, KeyCode keyCode) {
+
+    if (keyCode == null) {
+      throw new FXUnitException("No keycode must not be null.");
+    }
+
+    final String t = keyCode.toString();
+    if (t.length() == 1 && Character.isAlphabetic(t.codePointAt(0))) {
+      typeKey(target, t.charAt(0));
+    } else {
+      invokeOnFXThread(() -> {
+        Event.fireEvent(target, new KeyEvent(KeyEvent.KEY_PRESSED, null, null, keyCode, false, false, false, false));
+        Event.fireEvent(target, new KeyEvent(KeyEvent.KEY_RELEASED, null, null, keyCode, false, false, false, false));
+      });
+      doDelay();
+    }
+  }
+
+  /**
+   * Sleep for <i>n</i> milliseconds specified by {@link #delay} if NOT executing on
    * the JavaFX applicaton thread.
    */
   private static void doDelay() {
