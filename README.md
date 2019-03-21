@@ -1,6 +1,6 @@
 # fx-unit
 
-fx-unit aims to be a utility for unit testing JavaFX controllers as well as integration testing JavaFX UIs, as simple as possible: 
+fx-unit aims to be a utility for unit testing JavaFX 11 controllers as well as integration testing JavaFX UIs, as simple as possible: 
 + test early
 + write tests with at most no overhead
 + simplified bootstrapping for you test setups
