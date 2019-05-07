@@ -16,39 +16,25 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-package org.aeonium.fxunit;
+package org.aeonium.fxunit.testUI;
+
+import java.net.URL;
+import java.util.ResourceBundle;
+import javafx.fxml.Initializable;
 
 /**
- * Exception for aeFXUnit problems that may occur anywhere or in overridden
- * methods that cannot declare an exception.
+ * Alternative FXML Controller class
  *
  * @author Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;
  */
-public class FXUnitException extends RuntimeException {
+public class FXMLController1 implements Initializable {
 
   /**
-   * Create a new FXUnitException.
+   * Initializes the controller class.
    */
-  public FXUnitException() {
-    super();
-  }
-
-  /**
-   * Create a new FXUnitException with message.
-   * @param message The message.
-   */
-  public FXUnitException(String message) {
-    super(message);
-  }
-  
-  
-  /**
-   * Create a new FXUnitException with message and a cause.
-   * @param message The message.
-   * @param cause The cause.
-   */
-  public FXUnitException(String message, Throwable cause) {
-    super(message, cause);
-  }
+  @Override
+  public void initialize(URL url, ResourceBundle rb) {
+    // TODO
+  }  
   
 }

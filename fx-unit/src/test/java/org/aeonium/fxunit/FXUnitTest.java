@@ -22,13 +22,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.aeonium.fxunit.testUI.FXMLController;
+import org.aeonium.fxunit.testUI.FXMLController1;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -73,6 +77,7 @@ public class FXUnitTest {
   @Test
   public void testInit() {
     System.out.println("init");
+    BooleanProperty ok = new SimpleBooleanProperty(false);
     FXUnit.init();
 
     Platform.runLater(() -> {
@@ -80,7 +85,16 @@ public class FXUnitTest {
       testStage.setScene(new Scene(new VBox(new Label("Init OK."))));
       testStage.show();
       testStage.hide();
+      ok.set(true);
     });
+    
+    try {
+      Thread.sleep(500);
+    } catch (InterruptedException ex) {
+      Logger.getLogger(FXUnitTest.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    
+    Assert.assertTrue("Do not fail initialization.", ok.getValue());
   }
 
   @Test
@@ -89,6 +103,51 @@ public class FXUnitTest {
     initializeToolkit();
 
     FXUnit.load(FXMLController.class.getResource("FXML.fxml"));
+    assertNotNull(FXUnit.getController());
+    assertNotNull(FXUnit.getRoot());
+    assertNull(FXUnit.getStage());
+  }
+  
+
+  @Test(expected = RuntimeException.class)
+  public void testLoad_invalidFXML() {
+    System.out.println("load_invalidFXML");
+    initializeToolkit();
+
+    FXUnit.load(FXMLController.class.getResource("FXML_error.fxml"));
+    assertNotNull(FXUnit.getController());
+    assertNotNull(FXUnit.getRoot());
+    assertNull(FXUnit.getStage());
+  }
+  
+  @Test(expected = NullPointerException.class)
+  public void testLoad_nonExistent() {
+    System.out.println("load_nonExistent");
+    initializeToolkit();
+
+    FXUnit.load(FXMLController.class.getResource("FXML-does-not-exist.fxml"));
+    assertNotNull(FXUnit.getController());
+    assertNotNull(FXUnit.getRoot());
+    assertNull(FXUnit.getStage());
+  }
+  
+  @Test
+  public void testLoadController() {
+    System.out.println("loadController");
+    initializeToolkit();
+
+    FXUnit.load(FXMLController.class.getResource("FXML_noController.fxml"), FXMLController1.class);
+    assertNotNull(FXUnit.getController());
+    assertTrue("is FXMLController1.class", FXUnit.getController() instanceof FXMLController1);
+    assertNotNull(FXUnit.getRoot());
+  }
+  
+  @Test(expected = NullPointerException.class)
+  public void testLoadController_nonExistent() {
+    System.out.println("loadController_nonExistent");
+    initializeToolkit();
+
+    FXUnit.load(FXMLController.class.getResource("FXML-does-not-exist.fxml"), FXMLController1.class);
     assertNotNull(FXUnit.getController());
     assertNotNull(FXUnit.getRoot());
     assertNull(FXUnit.getStage());
@@ -105,6 +164,18 @@ public class FXUnitTest {
 
     FXUnit.show(FXMLController.class.getResource("FXML.fxml"));
     assertNotNull(FXUnit.getController());
+    assertNotNull(FXUnit.getStage());
+    assertNotNull(FXUnit.getRoot());
+  }
+  
+  @Test
+  public void testShowController() {
+    System.out.println("showController");
+    initializeToolkit();
+
+    FXUnit.show(FXMLController.class.getResource("FXML_noController.fxml"), FXMLController1.class);
+    assertNotNull(FXUnit.getController());
+    assertTrue("is FXMLController1.class", FXUnit.getController() instanceof FXMLController1);
     assertNotNull(FXUnit.getStage());
     assertNotNull(FXUnit.getRoot());
   }

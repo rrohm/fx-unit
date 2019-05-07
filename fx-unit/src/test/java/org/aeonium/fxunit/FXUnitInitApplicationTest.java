@@ -22,12 +22,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -69,6 +72,7 @@ public class FXUnitInitApplicationTest {
   public void testInit_Application() {
     System.out.println("init");
     Platform.setImplicitExit(true);
+    BooleanProperty ok = new SimpleBooleanProperty(false);
 
     Thread t = new Thread(() -> {
       Application instance = new FXUnitApp();
@@ -88,8 +92,16 @@ public class FXUnitInitApplicationTest {
       testStage.setScene(new Scene(new VBox(new Label("Init OK."))));
       testStage.show();
       testStage.hide();
+      ok.set(true);
     });
-
+    
+    try {
+      Thread.sleep(500);
+    } catch (InterruptedException ex) {
+      Logger.getLogger(FXUnitTest.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    
+    Assert.assertTrue("Do not fail initialization.", ok.getValue());
   }
 //
 //  /**

@@ -19,6 +19,7 @@
 package org.aeonium.fxunit;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -101,7 +102,17 @@ public class FXUnit {
     }
   }
 
+  /**
+   * Load an FXML UI from the given URL and set the controller and root node
+   * properties according to the FXML.
+   *
+   * @param url The FXML URL.
+   */
   public static void load(URL url) {
+    if (url == null) {
+      throw new NullPointerException("Location is not set. Please provide a valid URL.");
+    }
+
     try {
       FXMLLoader loader = new FXMLLoader(url);
       loader.load();
@@ -110,7 +121,33 @@ public class FXUnit {
 
     } catch (IOException ex) {
       Logger.getLogger(FXUnit.class.getName()).log(Level.SEVERE, null, ex);
-      throw new RuntimeException(ex);
+      throw new FXUnitException("Cannot load FXML.", ex);
+    }
+  }
+
+  /**
+   * Load an FXML UI from the given URL and instatiate the given controller
+   * class. The {@link #controller} reference is set to the new instance.
+   * {@link #root} is set to the root node of the FXML UI.
+   *
+   * @param url
+   * @param controllerClass
+   */
+  public static void load(URL url, Class controllerClass) {
+    if (url == null) {
+      throw new NullPointerException("Location is not set. Please provide a valid URL.");
+    }
+
+    try {
+      FXMLLoader loader = new FXMLLoader(url);
+      loader.setController(controllerClass.getDeclaredConstructor().newInstance());
+      loader.load();
+      controller = loader.getController();
+      root = loader.getRoot();
+
+    } catch (IOException | InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException ex) {
+      Logger.getLogger(FXUnit.class.getName()).log(Level.SEVERE, null, ex);
+      throw new FXUnitException("Cannot load FXML and Controller.", ex);
     }
   }
 
@@ -125,28 +162,19 @@ public class FXUnit {
   public static void show(URL url) {
     Platform.runLater(() -> {
       load(url);
-      stage = new Stage(StageStyle.UNDECORATED);
-      stage.setTitle("FXUnit testing " + getShortFilenameFromURL(url));
-      Scene scene = new Scene(root);
-      stage.setScene(scene);
-      stage.show();
+      showTestingStage(url);
     });
 
-    try {
-      Thread.sleep(1000);
-    } catch (InterruptedException ex) {
-      Logger.getLogger(FXUnit.class.getName()).log(Level.SEVERE, null, ex);
-      Thread.currentThread().interrupt();
-    }
+    sleep();
   }
 
-  private static String getShortFilenameFromURL(URL url) {
-    final String filename = url.getFile();
-    if (filename.contains("/")) {
-      return filename.substring(filename.lastIndexOf("/") + 1);
-    } else {
-      return filename;
-    }
+  public static void show(URL url, Class controller) {
+    Platform.runLater(() -> {
+      load(url, controller);
+      showTestingStage(url);
+    });
+
+    sleep();
   }
 
   /**
@@ -170,6 +198,32 @@ public class FXUnit {
 
   public static void shutdown(Stage stage) {
     FXHelper.shutdownStage(stage);
+  }
+
+  private static void showTestingStage(URL url) {
+    stage = new Stage(StageStyle.UNDECORATED);
+    stage.setTitle("FXUnit testing " + getShortFilenameFromURL(url));
+    Scene scene = new Scene(root);
+    stage.setScene(scene);
+    stage.show();
+  }
+
+  private static void sleep() {
+    try {
+      Thread.sleep(1000);
+    } catch (InterruptedException ex) {
+      Logger.getLogger(FXUnit.class.getName()).log(Level.SEVERE, null, ex);
+      Thread.currentThread().interrupt();
+    }
+  }
+
+  private static String getShortFilenameFromURL(URL url) {
+    final String filename = url.getFile();
+    if (filename.contains("/")) {
+      return filename.substring(filename.lastIndexOf("/") + 1);
+    } else {
+      return filename;
+    }
   }
 
 }
