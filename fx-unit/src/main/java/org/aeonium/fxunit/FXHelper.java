@@ -31,6 +31,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+//import javafx.scene.robot.Robot;
 import javafx.stage.Stage;
 
 /**
@@ -50,6 +51,18 @@ public final class FXHelper {
    */
   private FXHelper() {
     // no op.
+  }
+
+  /**
+   * Pause the current thread for 1s.
+   */
+  public static void sleep() {
+    try {
+      Thread.sleep(1000);
+    } catch (InterruptedException ex) {
+      Logger.getLogger(FXHelper.class.getName()).log(Level.SEVERE, null, ex);
+      Thread.currentThread().interrupt();
+    }
   }
 
   /**
@@ -184,9 +197,25 @@ public final class FXHelper {
    * @param c The character
    */
   public static void typeKey(Node target, Character c) {
-
+    final KeyCode keyCode;
     final String t = c.toString();
-    final KeyCode keyCode = KeyCode.getKeyCode(t.toUpperCase());
+    switch (t) {
+      case " ":
+        keyCode = KeyCode.SPACE;
+        break;
+      case ".":
+        keyCode = KeyCode.PERIOD;
+        break;
+      case ",":
+        keyCode = KeyCode.COMMAND;
+        break;
+      case ":":
+        keyCode = KeyCode.COLON;
+        break;
+      default:
+        keyCode = KeyCode.getKeyCode(t.toUpperCase());
+        break;
+    }
     if (keyCode == null) {
       throw new FXUnitException("No keycode found for " + c);
     }

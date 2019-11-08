@@ -31,6 +31,7 @@ public final class I18N {
   public static final String ID_IS_NULL           = "ID_IS_NULL";
   public static final String NODE_IS_NULL         = "NODE_IS_NULL";
   public static final String TABPANE_IS_NULL      = "TABPANE_IS_NULL";
+  public static final String TOGGLEBUTTON_IS_NULL = "TOGGLEBUTTON_IS_NULL";
   public static final String WINDOW_IS_NULL       = "WINDOW_IS_NULL";
   
   private static final String BUNDLE_NAME = "org.aeonium.fxunit.i18n.messages";

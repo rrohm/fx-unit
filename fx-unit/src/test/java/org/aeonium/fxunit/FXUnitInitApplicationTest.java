@@ -96,7 +96,7 @@ public class FXUnitInitApplicationTest {
     });
     
     try {
-      Thread.sleep(500);
+      Thread.sleep(1000);
     } catch (InterruptedException ex) {
       Logger.getLogger(FXUnitTest.class.getName()).log(Level.SEVERE, null, ex);
     }

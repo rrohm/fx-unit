@@ -20,7 +20,9 @@ package org.aeonium.fxunit;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
@@ -101,6 +103,10 @@ public class FXUnit {
       Thread.currentThread().interrupt();
     }
   }
+  
+  public static void load(String url){
+    load(FXUnit.class.getResource(url));
+  }
 
   /**
    * Load an FXML UI from the given URL and set the controller and root node
@@ -115,6 +121,27 @@ public class FXUnit {
 
     try {
       FXMLLoader loader = new FXMLLoader(url);
+      loader.load();
+      controller = loader.getController();
+      root = loader.getRoot();
+
+    } catch (IOException ex) {
+      Logger.getLogger(FXUnit.class.getName()).log(Level.SEVERE, null, ex);
+      throw new FXUnitException("Cannot load FXML.", ex);
+    }
+  }
+ 
+  public static void load(URL url, ResourceBundle rb) {
+    if (url == null) {
+      throw new NullPointerException("Location is not set. Please provide a valid URL.");
+    }
+    if (rb == null) {
+      throw new NullPointerException("ResourceBundle must not be null.");
+    }
+
+    try {
+      FXMLLoader loader = new FXMLLoader(url);
+      loader.setResources(rb);
       loader.load();
       controller = loader.getController();
       root = loader.getRoot();
@@ -150,6 +177,10 @@ public class FXUnit {
       throw new FXUnitException("Cannot load FXML and Controller.", ex);
     }
   }
+  
+  public static void show(String url){
+    show(FXUnit.class.getResource(url));
+  }
 
   /**
    * Load an FXML UI into a new (undecorated) stage and show it. This method
@@ -165,7 +196,15 @@ public class FXUnit {
       showTestingStage(url);
     });
 
-    sleep();
+    FXHelper.sleep();
+  }
+  public static void show(URL url, ResourceBundle rb) {
+    Platform.runLater(() -> {
+      load(url, rb);
+      showTestingStage(url);
+    });
+
+    FXHelper.sleep();
   }
 
   public static void show(URL url, Class controller) {
@@ -174,7 +213,7 @@ public class FXUnit {
       showTestingStage(url);
     });
 
-    sleep();
+    FXHelper.sleep();
   }
 
   /**
@@ -208,14 +247,6 @@ public class FXUnit {
     stage.show();
   }
 
-  private static void sleep() {
-    try {
-      Thread.sleep(1000);
-    } catch (InterruptedException ex) {
-      Logger.getLogger(FXUnit.class.getName()).log(Level.SEVERE, null, ex);
-      Thread.currentThread().interrupt();
-    }
-  }
 
   private static String getShortFilenameFromURL(URL url) {
     final String filename = url.getFile();

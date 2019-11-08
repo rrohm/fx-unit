@@ -23,11 +23,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.aeonium.fxunit.i18n.I18N;
@@ -255,14 +258,41 @@ public class AssertFXTest {
     AssertFX.assertNotVisible(node);
   }
 
+  @Test
+  public void testAssertSelected_Toggle() throws Exception {
+    System.out.println("assertSelected");
+    FlowPane tb = new FlowPane(Orientation.VERTICAL);
+    ToggleButton tb1 = new ToggleButton("First");
+    tb1.setId("first");
+    ToggleButton tb2 = new ToggleButton("Second");
+    tb2.setId("second");
+    ToggleButton tb3 = new ToggleButton("Second");
+    tb3.setId("third");
+
+    String id = "second";
+    final CountDownLatch latch = new CountDownLatch(1);
+
+    Platform.runLater(() -> {
+      Scene scene = new Scene(tb);
+      tb.getChildren().addAll(tb1, tb2, tb3);
+      tb1.fire();
+      stage.setScene(scene);
+      latch.countDown();
+    });
+
+    latch.await();
+    AssertFX.assertSelected(tb1);
+    AssertFX.assertNotSelected(tb2);
+  }
+    
   /**
    * Test of assertSelected method, of class AssertFX.
    *
    * @throws java.lang.Exception any
    */
   @Test
-  public void testAssertSelected() throws Exception {
-    System.out.println("assertSelected");
+  public void testAssertSelected_TabPane() throws Exception {
+    System.out.println("assertSelected TabPane");
     TabPane tabPane = new TabPane();
     Tab tab1 = new Tab("First");
     tab1.setId("first");
@@ -287,7 +317,7 @@ public class AssertFXTest {
   }
 
   @Test(expected = AssertionError.class)
-  public void testAssertSelected_negative() throws Exception {
+  public void testAssertSelected_TabPane_negative() throws Exception {
     System.out.println("assertSelected");
     TabPane tabPane = new TabPane();
     Tab tab1 = new Tab("First");
@@ -313,7 +343,7 @@ public class AssertFXTest {
   }
 
   @Test
-  public void testAssertSelected_negative_tabPane_null() throws Exception {
+  public void testAssertSelected_TabPane_negative_tabPane_null() throws Exception {
     System.out.println("assertSelected");
     TabPane tabPane = null;
 
@@ -322,7 +352,7 @@ public class AssertFXTest {
   }
 
   @Test
-  public void testAssertSelected_negative_id_null() throws Exception {
+  public void testAssertSelected_TabPane_negative_id_null() throws Exception {
     System.out.println("assertSelected");
     TabPane tabPane = new TabPane();
     Tab tab1 = new Tab("First");
@@ -349,7 +379,7 @@ public class AssertFXTest {
   }
 
   @Test(expected = AssertionError.class)
-  public void testAssertSelected_negative_id_nonexistent() throws Exception {
+  public void testAssertSelected_TabPane_negative_id_nonexistent() throws Exception {
     System.out.println("assertSelected");
     TabPane tabPane = new TabPane();
     Tab tab1 = new Tab("First");
@@ -375,7 +405,7 @@ public class AssertFXTest {
   }
 
   @Test(expected = AssertionError.class)
-  public void testAssertSelected_negative_null_selection() throws Exception {
+  public void testAssertSelected_TabPane_negative_null_selection() throws Exception {
     System.out.println("assertSelected");
     TabPane tabPane = new TabPane();
 
