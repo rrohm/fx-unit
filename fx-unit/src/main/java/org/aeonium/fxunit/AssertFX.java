@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2020 Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -37,6 +37,10 @@ import static org.aeonium.fxunit.i18n.I18N.*;
  * @author Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;
  */
 public class AssertFX {
+
+  protected static final String TOOLTIPGETTEXT_SHOULDBE = "getTooltip().getText() should be ";
+  protected static final String TEXT_SHOULDBE = "getText() should be ";
+  protected static final String BUT_IS = ", but is ";
 
   private static final String NODE = "Node ";
   private static final String WINDOW = "Window ";
@@ -76,7 +80,7 @@ public class AssertFX {
     if (node == null) {
       throw new AssertionError(I18N.getString(NODE_IS_NULL));
     }
-    if (node.isFocused() != true) {
+    if (!node.isFocused()) {
       throw new AssertionError(NODE + node + " should be focused, but is not.");
     }
   }
@@ -111,7 +115,7 @@ public class AssertFX {
     if (node == null) {
       throw new AssertionError(I18N.getString(NODE_IS_NULL));
     }
-    if (node.isManaged() != true) {
+    if (!node.isManaged()) {
       throw new AssertionError(NODE + node + " should be managed, but is not.");
     }
   }
@@ -126,7 +130,7 @@ public class AssertFX {
     if (node == null) {
       throw new AssertionError(I18N.getString(NODE_IS_NULL));
     }
-    if (node.isManaged() == true) {
+    if (node.isManaged()) {
       throw new AssertionError(NODE + node + " is managed, but should not.");
     }
   }
@@ -140,7 +144,7 @@ public class AssertFX {
     if (toggleButton == null) {
       throw new AssertionError(I18N.getString(TOGGLEBUTTON_IS_NULL));
     }
-    if (toggleButton.isSelected() == true) {
+    if (toggleButton.isSelected()) {
       throw new AssertionError("toggleButton.isSelected() is " + toggleButton.isSelected() + ", should be " + false + ".");
     }
   }
@@ -207,7 +211,7 @@ public class AssertFX {
     if (toggleButton == null) {
       throw new AssertionError(I18N.getString(TOGGLEBUTTON_IS_NULL));
     }
-    if (toggleButton.isSelected() != true) {
+    if (!toggleButton.isSelected()) {
       throw new AssertionError("toggleButton.isSelected() is " + toggleButton.isSelected() + ", should be " + true + ".");
     }
   }
@@ -222,7 +226,7 @@ public class AssertFX {
     if (window == null) {
       throw new AssertionError(I18N.getString(WINDOW_IS_NULL));
     }
-    if (window.isShowing() == false) {
+    if (!window.isShowing()) {
       throw new AssertionError(WINDOW + window + " should be showing, but is not.");
     }
   }
@@ -231,20 +235,15 @@ public class AssertFX {
     if (node == null) {
       throw new AssertionError(I18N.getString(NODE_IS_NULL));
     }
-    if (node instanceof Labeled) {
-      Labeled labeled = (Labeled) node;
-      if (text == null) {
-        if (labeled.getText() != null) {
-          throw new AssertionError("getText() should be " + text + ", but is " + labeled.getText());
-        }
-
-      } else {
-        if (!text.equals(labeled.getText())) {
-          throw new AssertionError("getText() should be " + text + ", but is " + labeled.getText());
-        }
+    if (text == null) {
+      if (node.getText() != null) {
+        throw new AssertionError(TEXT_SHOULDBE + text + BUT_IS + node.getText());
       }
+
     } else {
-      throw new AssertionError(NODE + node + " should be an instance of Labeled, but is not.");
+      if (!text.equals(node.getText())) {
+        throw new AssertionError(TEXT_SHOULDBE + text + BUT_IS + node.getText());
+      }
     }
   }
 
@@ -252,20 +251,15 @@ public class AssertFX {
     if (node == null) {
       throw new AssertionError(I18N.getString(NODE_IS_NULL));
     }
-    if (node instanceof TextInputControl) {
-      TextInputControl textInputControl = (TextInputControl) node;
-      if (text == null) {
-        if (textInputControl.getText() != null) {
-          throw new AssertionError("getText() should be " + text + ", but is " + textInputControl.getText());
-        }
-
-      } else {
-        if (!text.equals(textInputControl.getText())) {
-          throw new AssertionError("getText() should be " + text + ", but is " + textInputControl.getText());
-        }
+    if (text == null) {
+      if (node.getText() != null) {
+        throw new AssertionError(TEXT_SHOULDBE + text + BUT_IS + node.getText());
       }
+
     } else {
-      throw new AssertionError(NODE + node + " should be an instance of TextInputControl, but is not.");
+      if (!text.equals(node.getText())) {
+        throw new AssertionError(TEXT_SHOULDBE + text + BUT_IS + node.getText());
+      }
     }
   }
 
@@ -278,8 +272,11 @@ public class AssertFX {
         throw new AssertionError("Tooltip is not null, but should be.");
       }
     } else {
+      if (node.getTooltip() == null) {
+        throw new AssertionError(TOOLTIPGETTEXT_SHOULDBE + text + ", but is null");
+      }
       if (!text.equals(node.getTooltip().getText())) {
-        throw new AssertionError("getTooltip().getText() should be " + text + ", but is " + node.getTooltip().getText());
+        throw new AssertionError(TOOLTIPGETTEXT_SHOULDBE + text + BUT_IS + node.getTooltip().getText());
       }
     }
   }
@@ -293,7 +290,7 @@ public class AssertFX {
     if (node == null) {
       throw new AssertionError(I18N.getString(NODE_IS_NULL));
     }
-    if (node.isVisible() != true) {
+    if (!node.isVisible()) {
       throw new AssertionError(NODE + node + " should be visible, but is not.");
     }
   }

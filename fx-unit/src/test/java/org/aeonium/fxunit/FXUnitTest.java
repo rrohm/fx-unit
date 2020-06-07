@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2020 Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -91,7 +91,7 @@ public class FXUnitTest {
     try {
       Thread.sleep(500);
     } catch (InterruptedException ex) {
-      Logger.getLogger(FXUnitTest.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(FXUnitTestBase.class.getName()).log(Level.SEVERE, null, ex);
     }
     
     Assert.assertTrue("Do not fail initialization.", ok.getValue());
@@ -194,7 +194,7 @@ public class FXUnitTest {
       try {
         Thread.sleep(1000);
       } catch (InterruptedException ex) {
-        Logger.getLogger(FXUnitTest.class.getName()).log(Level.INFO, null, ex);
+        Logger.getLogger(FXUnitTestBase.class.getName()).log(Level.INFO, null, ex);
         Thread.currentThread().interrupt();
       }
     }

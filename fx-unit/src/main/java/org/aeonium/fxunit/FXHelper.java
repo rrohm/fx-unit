@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2020 Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,7 +31,6 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-//import javafx.scene.robot.Robot;
 import javafx.stage.Stage;
 
 /**

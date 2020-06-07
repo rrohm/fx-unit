@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2020 Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -39,7 +39,7 @@ import org.junit.Test;
 /**
  * Test for the {@link FXUnit} class, must init the FX framework only once,
  * hence tests for {@link FXUnit#init() } have
- * been mived to {@link FXUnitTest}.
+ * been mived to {@link FXUnitTestBase}.
  *
  * @author Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;
  */
@@ -98,7 +98,7 @@ public class FXUnitInitApplicationTest {
     try {
       Thread.sleep(1000);
     } catch (InterruptedException ex) {
-      Logger.getLogger(FXUnitTest.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(FXUnitTestBase.class.getName()).log(Level.SEVERE, null, ex);
     }
     
     Assert.assertTrue("Do not fail initialization.", ok.getValue());

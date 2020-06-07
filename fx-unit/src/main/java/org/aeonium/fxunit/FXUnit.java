@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2020 Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,7 +20,6 @@ package org.aeonium.fxunit;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
