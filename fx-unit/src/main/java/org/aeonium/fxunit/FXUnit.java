@@ -28,8 +28,10 @@ import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -178,6 +180,14 @@ public class FXUnit {
     }
   }
   
+  public static void show(Node node) {
+    Platform.runLater(() -> {
+      showTestingStage(node);
+    });
+
+    FXHelper.sleep();
+  }
+  
   public static void show(String url){
     show(FXUnit.class.getResource(url));
   }
@@ -247,6 +257,20 @@ public class FXUnit {
     stage.show();
   }
 
+  private static void showTestingStage(Node node) {
+    stage = new Stage(StageStyle.UNDECORATED);
+    stage.setTitle("FXUnit testing " + node);
+    
+    Scene scene; 
+    if (node instanceof Parent) {
+      scene = new Scene((Parent) node);
+    } else {
+      Parent parent = new Pane(node);
+      scene = new Scene(parent);
+    }
+    stage.setScene(scene);
+    stage.show();
+  }
 
   private static String getShortFilenameFromURL(URL url) {
     final String filename = url.getFile();

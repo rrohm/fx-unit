@@ -31,5 +31,14 @@
                 <skipTests>true</skipTests>
             </properties>
         </action>
+        <action>
+            <actionName>CUSTOM-sonar:sonar</actionName>
+            <displayName>sonar:sonar</displayName>
+            <goals>
+                <goal>clean</goal>
+                <goal>verify</goal>
+                <goal>sonar:sonar</goal>
+            </goals>
+        </action>
                 
     </actions>

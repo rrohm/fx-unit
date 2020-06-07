@@ -217,7 +217,7 @@ public class FXHelperTest {
     });
 
     latch.await();
-    Thread.sleep(100);
+    Thread.sleep(200);
     
     assertEquals(true, node2.isFocused());
     assertEquals(false, node.isFocused());

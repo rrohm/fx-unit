@@ -84,10 +84,14 @@
           </additionalClasspathElements>
         </configuration>
       </plugin>
+      
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.3</version>
+        <version>0.8.5</version>
+        <configuration>
+          <excludes>javafx.*,com.sun.*</excludes>
+        </configuration>
         <executions>
           <execution>
             <goals>
@@ -103,6 +107,12 @@
           </execution>
         </executions>
       </plugin>
+      
+      <plugin>
+        <groupId>org.sonarsource.scanner.maven</groupId>
+        <artifactId>sonar-maven-plugin</artifactId>
+        <version>3.6.1.1688</version>
+      </plugin>
     </plugins>
   </build>
   <dependencies>
@@ -117,7 +127,7 @@
       <artifactId>junit</artifactId>
       <version>4.12</version>
       <scope>test</scope>
-    </dependency>
+    </dependency>    
     
     <dependency>
       <groupId>org.openjfx</groupId>
@@ -135,6 +145,12 @@
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-fxml</artifactId>
       <version>${javafx.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>5.5.2</version>
       <type>jar</type>
     </dependency>
   </dependencies>
