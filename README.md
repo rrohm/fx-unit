@@ -24,6 +24,7 @@ Also, Hamcrest matchers will be provided. At present, there are the first two ca
 public static Matcher<Node> isVisible()
 public static Matcher<Node> isNotVisible()
 ``` 
+Currently, a fluent-style API is in active development, coming soon.
 
 # About the Project
 
