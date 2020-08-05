@@ -52,6 +52,12 @@ public class AssertFX {
     // no op.
   }
 
+  /**
+   * Assert that the given node is disabled, i.e., that it's "disabled" property
+   * is true.
+   *
+   * @param node The node to be checked
+   */
   public static void assertDisabled(Node node) {
     if (node == null) {
       throw new AssertionError(I18N.getString(NODE_IS_NULL));
@@ -61,6 +67,12 @@ public class AssertFX {
     }
   }
 
+  /**
+   * Assert that the given node is enabled, i.e., that it's "disabled" property
+   * is false.
+   *
+   * @param node The node to be checked
+   */
   public static void assertEnabled(Node node) {
     if (node == null) {
       throw new AssertionError(I18N.getString(NODE_IS_NULL));
@@ -71,7 +83,7 @@ public class AssertFX {
   }
 
   /**
-   * Assert that the give node is focused, i.e., it's focused property is not
+   * Assert that the given node is focused, i.e., it's focused property is not
    * true.
    *
    * @param node The node to be checked
@@ -231,6 +243,12 @@ public class AssertFX {
     }
   }
 
+  /**
+   * Assert that the given node has a Text property value of the given string.
+   *
+   * @param node An instance of Labeled.
+   * @param text The required text string.
+   */
   public static void assertText(Labeled node, String text) {
     if (node == null) {
       throw new AssertionError(I18N.getString(NODE_IS_NULL));
@@ -247,6 +265,12 @@ public class AssertFX {
     }
   }
 
+  /**
+   * Assert that the given node has a Text property value of the given string.
+   *
+   * @param node An instance of TextInputControl.
+   * @param text The required text string.
+   */
   public static void assertText(TextInputControl node, String text) {
     if (node == null) {
       throw new AssertionError(I18N.getString(NODE_IS_NULL));
@@ -263,6 +287,13 @@ public class AssertFX {
     }
   }
 
+  /**
+   * Assert that the given node has a tooltip assigned with the given content
+   * string.
+   *
+   * @param node An instance of Control.
+   * @param text The required text string.
+   */
   public static void assertTooltipText(Control node, String text) {
     if (node == null) {
       throw new AssertionError(I18N.getString(NODE_IS_NULL));

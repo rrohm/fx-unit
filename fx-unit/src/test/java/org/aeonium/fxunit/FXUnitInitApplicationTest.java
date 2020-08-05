@@ -105,13 +105,13 @@ public class FXUnitInitApplicationTest {
   }
 //
 //  /**
-//   * Test of shutdown method, of class FXUnit.
+//   * Test of closeStage method, of class FXUnit.
 //   */
 //  @Test
 //  public void testShutdown_Stage() {
-//    System.out.println("shutdown");
+//    System.out.println("closeStage");
 //    Stage stage = null;
-//    FXUnit.shutdown(stage);
+//    FXUnit.closeStage(stage);
 //    // TODO review the generated test code and remove the default call to fail.
 //    fail("The test case is a prototype.");
 //  }

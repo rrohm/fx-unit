@@ -18,6 +18,7 @@
  */
 package org.aeonium.fxunit;
 
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.Node;
@@ -65,8 +66,13 @@ public class FX {
     }
     return new FX(node);
   }
-  
-  public FXCollection children(){
+
+  /**
+   * Get a collection of child nodes, in order to run further tests on them.
+   *
+   * @return An FXCollection wrapping the child nodes.
+   */
+  public FXCollection children() {
     if (this.node instanceof Parent) {
       final Parent parent = (Parent) this.node;
       if (parent.getChildrenUnmodifiable().size() > 0) {
@@ -79,6 +85,12 @@ public class FX {
     }
   }
 
+  /**
+   * Assert that the selected node has the given number of child nodes.
+   *
+   * @param count The required child node count.
+   * @return The FX instance, for call chaining ("fluent API").
+   */
   public FX hasChildren(int count) {
     if (this.node instanceof Parent) {
       Parent parent = (Parent) this.node;
@@ -93,8 +105,15 @@ public class FX {
 
     return this;
   }
-  
-  public FX hasText(String text){
+
+  /**
+   * Assert that the selected node is an instance of Labeled or an instance of
+   * TextInputControl and has a given value in it's text property.
+   *
+   * @param text The text content to be tested for.
+   * @return The FX instance, for call chaining ("fluent API").
+   */
+  public FX hasText(String text) {
     if (this.node instanceof Labeled) {
       Labeled labeled = (Labeled) this.node;
       AssertFX.assertText(labeled, text);
@@ -106,8 +125,14 @@ public class FX {
     }
     return this;
   }
-  
-  public FX hasTooltipText(String text){
+
+  /**
+   * Assert that the selected node has a tooltip with the given text content.
+   *
+   * @param text The tooltip text
+   * @return The FX instance, for call chaining ("fluent API").
+   */
+  public FX hasTooltipText(String text) {
     if (this.node instanceof Control) {
       Control control = (Control) this.node;
       AssertFX.assertTooltipText(control, text);
@@ -117,21 +142,88 @@ public class FX {
     return this;
   }
 
+  /**
+   * Assert that the selected node is disabled.
+   *
+   * @return The FX instance, for call chaining ("fluent API").
+   */
+  public FX isDisabled() {
+    AssertFX.assertDisabled(this.node);
+    return this;
+  }
+
+  /**
+   * Assert that the selected node is enabled.
+   *
+   * @return The FX instance, for call chaining ("fluent API").
+   */
+  public FX isEnabled() {
+    AssertFX.assertEnabled(this.node);
+    return this;
+  }
+
+  /**
+   * Assert that the selected node has no child nodes.
+   *
+   * @return The FX instance, for call chaining ("fluent API").
+   */
   public FX isEmpty() {
     if (this.node instanceof Parent) {
       Parent parent = (Parent) this.node;
       AssertFX.assertHasChildren(parent, 0);
+    } else {
+      LOG.log(Level.WARNING, "{0} is not an instance of Parent, cannot have child nodes.", this.node);
     }
-    LOG.log(Level.WARNING, "{0} is not an instance of Parent, cannot have child nodes.", this.node);
+
     return this;
   }
+
+  /**
+   * Assert that the selected node is focused.
+   *
+   * @return The FX instance, for call chaining ("fluent API").
+   */
+  public FX isFocused() {
+    AssertFX.assertFocused(this.node);
+    return this;
+  }
+
   private static final Logger LOG = Logger.getLogger(FX.class.getName());
 
+  /**
+   * Assert that the selected node is an instance of Parent and has any
+   * children.
+   *
+   * @return The FX instance, for call chaining ("fluent API").
+   */
+  public FX isNotEmpty() {
+    if (this.node instanceof Parent) {
+      final Parent parent = (Parent) this.node;
+      if (parent.getChildrenUnmodifiable().isEmpty()) {
+        throw new AssertionError("This parent has no children, but should not be empty.");
+      }
+    } else {
+      throw new AssertionError("This node is not an instance of Parent");
+    }
+    return this;
+  }
+
+  /**
+   * Assert that the selected node is <i>not</i> in managed state.
+   *
+   * @return The FX instance, for call chaining ("fluent API").
+   */
   public FX isNotManaged() {
     AssertFX.assertNotManaged(node);
     return this;
   }
-  
+
+  /**
+   * Assert that the selected node is an instance of ToggleButton and is
+   * <i>not</i> selected.
+   *
+   * @return The FX instance, for call chaining ("fluent API").
+   */
   public FX isNotSelected() {
     if (this.node instanceof ToggleButton) {
       ToggleButton toggleButton = (ToggleButton) this.node;
@@ -142,11 +234,40 @@ public class FX {
     return this;
   }
 
+  /**
+   * Assert that the selected node is <i>not</i> visible.
+   *
+   * @return The FX instance, for call chaining ("fluent API").
+   */
   public FX isNotVisible() {
     AssertFX.assertNotVisible(node);
     return this;
   }
 
+  /**
+   * Assert that there is no node with the given ID.
+   *
+   * @param id The node ID.
+   */
+  public static void isNotPresent(String id) {
+    if (FXUnit.getStage() == null) {
+      throw new NullPointerException("FXUnit.getStage() is null. Did you initialize the framework properly or do you rather want to test a stage created by yourself? In this case have a look at FX.lookup(stage, id)");
+    }
+    if (FXUnit.getStage().getScene() == null) {
+      throw new NullPointerException("FXUnit.getStage() has no valid scene. Did you load content?");
+    }
+    Node nodeNotToBePresent = FXUnit.getStage().getScene().lookup(id);
+    if (nodeNotToBePresent != null) {
+      throw new AssertionError("Node with ID " + id + " is present, but should not.");
+    }
+  }
+
+  /**
+   * Assert that the selected node is an instance of ToggleButton and is
+   * selected.
+   *
+   * @return The FX instance, for call chaining ("fluent API").
+   */
   public FX isSelected() {
     if (this.node instanceof ToggleButton) {
       ToggleButton toggleButton = (ToggleButton) this.node;
@@ -157,11 +278,21 @@ public class FX {
     return this;
   }
 
+  /**
+   * Assert that the selected node is in managed state.
+   *
+   * @return The FX instance, for call chaining ("fluent API").
+   */
   public FX isManaged() {
     AssertFX.assertManaged(node);
     return this;
   }
 
+  /**
+   * Assert that the selected node is visible.
+   *
+   * @return The FX instance, for call chaining ("fluent API").
+   */
   public FX isVisible() {
     AssertFX.assertVisible(node);
     return this;
@@ -208,8 +339,48 @@ public class FX {
     }
     return this;
   }
-  
-  
+
+  public <T> FX select(int index) {
+    if (this.node instanceof ChoiceBox) {
+      ChoiceBox<T> choiceBox = (ChoiceBox<T>) this.node;
+      try {
+        FXHelper.runAndWait(() -> {
+          choiceBox.getSelectionModel().select(index);
+        });
+      } catch (ExecutionException ex) {
+        Logger.getLogger(FX.class.getName()).log(Level.SEVERE, null, ex);
+        throw new RuntimeException(ex);
+      }
+      T value = choiceBox.getValue();
+      if (value == null) {
+        if (choiceBox.getValue() != null) {
+          throw new AssertionError("Value of " + this.node + " should be null, but is " + choiceBox.getValue());
+        }
+      }
+    } else {
+      throw new UnsupportedOperationException("Type " + this.node.getClass().getName() + " is not supported. Currently, hasValue() supports ChoiceBox only.");
+    }
+    return this;
+  }
+
+//  public <T> FX select(T value) {
+//    if (this.node instanceof ChoiceBox) {
+//      ChoiceBox<T> choiceBox = (ChoiceBox<T>) this.node;
+//      choiceBox.getSelectionModel().select(value);
+//      if (choiceBox.getValue() == null) {
+//        if (choiceBox.getValue() != null) {
+//          throw new AssertionError("Value of " + this.node + " should be null, but is " + choiceBox.getValue());
+//        }
+//      } else {
+//        if (!value.equals(choiceBox.getValue())) {
+//          throw new AssertionError("Value of " + this.node + " should be " + value + ", but is " + choiceBox.getValue());
+//        }
+//      }
+//    } else {
+//      throw new UnsupportedOperationException("Type " + this.node.getClass().getName() + " is not supported. Currently, hasValue() supports ChoiceBox only.");
+//    }
+//    return this;
+//  }
   public <T> FX setValue(T value) {
     if (this.node instanceof ChoiceBox) {
       ChoiceBox<T> choiceBox = (ChoiceBox<T>) this.node;
@@ -228,6 +399,5 @@ public class FX {
     }
     return this;
   }
-  
-  
+
 }

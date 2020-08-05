@@ -104,8 +104,8 @@ public class FXUnit {
       Thread.currentThread().interrupt();
     }
   }
-  
-  public static void load(String url){
+
+  public static void load(String url) {
     load(FXUnit.class.getResource(url));
   }
 
@@ -131,7 +131,7 @@ public class FXUnit {
       throw new FXUnitException("Cannot load FXML.", ex);
     }
   }
- 
+
   public static void load(URL url, ResourceBundle rb) {
     if (url == null) {
       throw new NullPointerException("Location is not set. Please provide a valid URL.");
@@ -178,7 +178,7 @@ public class FXUnit {
       throw new FXUnitException("Cannot load FXML and Controller.", ex);
     }
   }
-  
+
   public static void show(Node node) {
     Platform.runLater(() -> {
       showTestingStage(node);
@@ -186,8 +186,8 @@ public class FXUnit {
 
     FXHelper.sleep();
   }
-  
-  public static void show(String url){
+
+  public static void show(String url) {
     show(FXUnit.class.getResource(url));
   }
 
@@ -207,6 +207,7 @@ public class FXUnit {
 
     FXHelper.sleep();
   }
+
   public static void show(URL url, ResourceBundle rb) {
     Platform.runLater(() -> {
       load(url, rb);
@@ -226,15 +227,18 @@ public class FXUnit {
   }
 
   /**
-   * Optional method for shutting down the FXUnit framework - currently it is
-   * only used for adding a delay of 1s when finishing all test, in order to
-   * ensure that the last log actions may terminate.
+   * Close the current stage, if it is not null, and add a delay of a second, 
+   * e.g., to ensure cleanups to get actual done.
    */
-  public static void shutdown() {
+  public static void closeStage() {
+    if (stage != null) {
+      FXHelper.shutdownStage(stage);
+    }
+    
     try {
       Thread.sleep(1000);
     } catch (InterruptedException ex) {
-      Logger.getLogger(FXHelper.class.getName()).log(Level.INFO, null, ex);
+      Logger.getLogger(FXUnitTestBase.class.getName()).log(Level.INFO, null, ex);
       Thread.currentThread().interrupt();
     }
   }
@@ -259,8 +263,8 @@ public class FXUnit {
   private static void showTestingStage(Node node) {
     stage = new Stage(StageStyle.UNDECORATED);
     stage.setTitle("FXUnit testing " + node);
-    
-    Scene scene; 
+
+    Scene scene;
     if (node instanceof Parent) {
       scene = new Scene((Parent) node);
     } else {

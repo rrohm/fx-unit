@@ -87,13 +87,13 @@ public class FXUnitTest {
       testStage.hide();
       ok.set(true);
     });
-    
+
     try {
       Thread.sleep(500);
     } catch (InterruptedException ex) {
       Logger.getLogger(FXUnitTestBase.class.getName()).log(Level.SEVERE, null, ex);
     }
-    
+
     Assert.assertTrue("Do not fail initialization.", ok.getValue());
   }
 
@@ -107,7 +107,6 @@ public class FXUnitTest {
     assertNotNull(FXUnit.getRoot());
     assertNull(FXUnit.getStage());
   }
-  
 
   @Test(expected = RuntimeException.class)
   public void testLoad_invalidFXML() {
@@ -119,7 +118,7 @@ public class FXUnitTest {
     assertNotNull(FXUnit.getRoot());
     assertNull(FXUnit.getStage());
   }
-  
+
   @Test(expected = NullPointerException.class)
   public void testLoad_nonExistent() {
     System.out.println("load_nonExistent");
@@ -130,7 +129,7 @@ public class FXUnitTest {
     assertNotNull(FXUnit.getRoot());
     assertNull(FXUnit.getStage());
   }
-  
+
   @Test
   public void testLoadController() {
     System.out.println("loadController");
@@ -141,7 +140,7 @@ public class FXUnitTest {
     assertTrue("is FXMLController1.class", FXUnit.getController() instanceof FXMLController1);
     assertNotNull(FXUnit.getRoot());
   }
-  
+
   @Test(expected = NullPointerException.class)
   public void testLoadController_nonExistent() {
     System.out.println("loadController_nonExistent");
@@ -167,7 +166,7 @@ public class FXUnitTest {
     assertNotNull(FXUnit.getStage());
     assertNotNull(FXUnit.getRoot());
   }
-  
+
   @Test
   public void testShowController() {
     System.out.println("showController");
@@ -201,13 +200,14 @@ public class FXUnitTest {
   }
 
   /**
-   * Test of shutdown method, of class FXUnit, currently only adding delay time.
+   * Test of closeStage method, of class FXUnit, closing the testing stage and
+   * adding delay time.
    */
   @Test
-  public void testShutdown() {
+  public void testCloseStage() {
     System.out.println("shutdown");
     long timeBefore = System.currentTimeMillis();
-    FXUnit.shutdown();
+    FXUnit.closeStage();
     long timeAfter = System.currentTimeMillis();
 
     assertTrue("Delay time >= 1000 ms", timeAfter >= timeBefore + 1000);
