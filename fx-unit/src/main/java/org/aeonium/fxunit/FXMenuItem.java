@@ -33,6 +33,9 @@ public class FXMenuItem {
   }
   
   public FXMenuItem isDisabled(){
+    if (this.item == null) {
+      throw new AssertionError("MenuItem is null.");
+    }
     if (!this.item.isDisable()) {
       throw new AssertionError("MenuItem " + this.item + " should be disabled, but is not.");
     }
@@ -40,6 +43,9 @@ public class FXMenuItem {
   }
   
   public FXMenuItem isEnabled(){
+    if (this.item == null) {
+      throw new AssertionError("MenuItem is null.");
+    }
     if (this.item.isDisable()) {
       throw new AssertionError("MenuItem " + this.item + " should be enabled, but is not.");
     }
@@ -47,6 +53,9 @@ public class FXMenuItem {
   }
   
   public FXMenuItem isVisible(){
+    if (this.item == null) {
+      throw new AssertionError("MenuItem is null.");
+    }
     if (!this.item.isVisible()) {
       throw new AssertionError("MenuItem " + this.item + " should be visible, but is not.");
     }
@@ -54,6 +63,9 @@ public class FXMenuItem {
   }
   
   public FXMenuItem isNotVisible(){
+    if (this.item == null) {
+      throw new AssertionError("MenuItem is null.");
+    }
     if (this.item.isVisible()) {
       throw new AssertionError("MenuItem " + this.item + " should not be visible, but is.");
     }

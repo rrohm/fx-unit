@@ -39,7 +39,18 @@ public class FXMenu {
     this.items = items;
   }
 
+  /**
+   * Assert that there is a menu item with the given ID, and return it wrapped
+   * in an FXMenuItem.
+   *
+   * @param id The menu item's ID, prefixed with '#'.
+   * @return An FXMenuItem test wrapper. 
+   */
   public FXMenuItem getMenuItem(String id) {
+    if (this.items == null) {
+      throw new AssertionError("items is null, but should not.");
+    }
+
     if (!id.startsWith("#")) {
       id = "#".concat(id);
     }
@@ -54,6 +65,10 @@ public class FXMenu {
   }
 
   public FXMenu hasMenuItem(String id) {
+    if (this.items == null) {
+      throw new AssertionError("items is null, but should not.");
+    }
+    
     if (!id.startsWith("#")) {
       id = "#".concat(id);
     }

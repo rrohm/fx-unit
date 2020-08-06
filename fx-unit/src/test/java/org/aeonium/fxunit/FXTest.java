@@ -18,7 +18,18 @@
  */
 package org.aeonium.fxunit;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Control;
+import javafx.scene.control.MenuItem;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -35,24 +46,62 @@ import org.junit.Ignore;
  */
 public class FXTest {
 
+  Stage stage;
+  
   public FXTest() {
   }
 
   @BeforeClass
   public static void setUpClass() {
+    Thread t = new Thread("JavaFX Init Thread") {
+      @Override
+      public void run() {
+        try {
+          Application.launch(FXUnitApp.class, new String[0]);
+        } catch (IllegalStateException ex) {
+          if (!ex.getMessage().equals("Application launch must not be called more than once")) {
+            throw ex;
+          }
+        }
+      }
+    };
+    t.setDaemon(true);
+    t.start();
+    try {
+      Thread.sleep(1000);
+    } catch (InterruptedException ex) {
+      Logger.getLogger(FXHelper.class.getName()).log(Level.INFO, null, ex);
+      Thread.currentThread().interrupt();
+    }
   }
 
   @AfterClass
   public static void tearDownClass() {
+    try {
+      Thread.sleep(1000);
+    } catch (InterruptedException ex) {
+      Logger.getLogger(FXHelper.class.getName()).log(Level.INFO, null, ex);
+      Thread.currentThread().interrupt();
+    }
   }
 
   @Before
   public void setUp() {
+    Platform.runLater(() -> {
+      stage = new Stage();
+      stage.show();
+    });
   }
 
   @After
   public void tearDown() {
+    Platform.runLater(() -> {
+      if (stage != null) {
+        stage.hide();
+      }
+    });
   }
+
 
   protected static final String SOME_ID = "some ID";
 
@@ -94,34 +143,57 @@ public class FXTest {
 
   /**
    * Test of hasChildren method, of class FX.
+   * @throws Exception any
    */
   @Test
-  @Ignore("TODO")
-  public void testHasChildren() {
+  public void testHasChildren() throws Exception {
     System.out.println("hasChildren");
-    int count = 0;
-    FX instance = null;
-    FX expResult = null;
+    int count = 1;
+    
+    final Node node = new Button("button");
+    final CountDownLatch latch = new CountDownLatch(1);
+    final VBox vBox = new VBox(node);
+    vBox.setId("SUT");
+
+    Platform.runLater(() -> {
+      Scene scene = new Scene(vBox);
+      stage.setScene(scene);
+      latch.countDown();
+    });
+
+    latch.await();
+    Thread.sleep(300);
+    
+    FX instance = FX.lookup(stage, "#SUT");
+    assertNotNull(instance);
     FX result = instance.hasChildren(count);
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
   }
 
   /**
    * Test of hasText method, of class FX.
+   * @throws java.lang.Exception any
    */
   @Test
-  @Ignore("TODO")
-  public void testHasText() {
+  public void testHasText() throws Exception{
     System.out.println("hasText");
-    String text = "";
-    FX instance = null;
-    FX expResult = null;
-    FX result = instance.hasText(text);
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
+    String text = "button";
+    
+    final Node node = new Button("button");
+    final CountDownLatch latch = new CountDownLatch(1);
+    final VBox vBox = new VBox(node);
+    node.setId("SUT");
+
+    Platform.runLater(() -> {
+      Scene scene = new Scene(vBox);
+      stage.setScene(scene);
+      latch.countDown();
+    });
+
+    latch.await();
+    Thread.sleep(300);
+    
+    FX instance = FX.lookup(stage, "#SUT");
+    instance.hasText("button");
   }
 
   /**
@@ -243,6 +315,87 @@ public class FXTest {
     assertEquals(expResult, result);
     // TODO review the generated test code and remove the default call to fail.
     fail("The test case is a prototype.");
+  }
+
+  /**
+   * Test of getContextMenu method, of class FX.
+   * @throws java.lang.Exception any
+   */
+  @Test
+  public void testGetContextMenu() throws Exception {
+    System.out.println("getContextMenu");
+    final Control node = new Button("button");
+    final CountDownLatch latch = new CountDownLatch(1);
+    final VBox vBox = new VBox(node);
+    node.setId("SUT");
+    ContextMenu contextMenu = new ContextMenu(new MenuItem("Erstens"), new MenuItem("Zweitens"));
+    node.setContextMenu(contextMenu);
+
+    Platform.runLater(() -> {
+      Scene scene = new Scene(vBox);
+      stage.setScene(scene);
+      latch.countDown();
+    });
+
+    latch.await();
+    Thread.sleep(300);
+    
+    FX instance = FX.lookup(stage, "#SUT");
+    FXMenu contextMenuFX = instance.getContextMenu();
+    assertNotEquals(instance, contextMenuFX);
+    Thread.sleep(100);
+  }
+  @Test
+  public void testHasMenuItem() throws Exception {
+    System.out.println("hasMenuItem");
+    final Control node = new Button("button");
+    final CountDownLatch latch = new CountDownLatch(1);
+    final VBox vBox = new VBox(node);
+    node.setId("SUT");
+    final MenuItem menuItem2 = new MenuItem("Zweitens");
+    menuItem2.setId("item2");
+    ContextMenu contextMenu = new ContextMenu(new MenuItem("Erstens"), menuItem2);
+    node.setContextMenu(contextMenu);
+
+    Platform.runLater(() -> {
+      Scene scene = new Scene(vBox);
+      stage.setScene(scene);
+      latch.countDown();
+    });
+
+    latch.await();
+    Thread.sleep(300);
+    
+    FX instance = FX.lookup(stage, "#SUT");
+    FXMenu contextMenuFX = instance.getContextMenu();
+    assertNotEquals(instance, contextMenuFX);
+    contextMenuFX.hasMenuItem("#item2");
+    Thread.sleep(100);
+  }
+  
+  @Test(expected = AssertionError.class)
+  public void testGetContextMenu_notControl_throws() throws Exception {
+    System.out.println("getContextMenu");
+    final Control node = new Button("button");
+    final CountDownLatch latch = new CountDownLatch(1);
+    final VBox vBox = new VBox(node);
+    vBox.setId("SUT");
+    ContextMenu contextMenu = new ContextMenu(new MenuItem("Erstens"), new MenuItem("Zweitens"));
+    node.setContextMenu(contextMenu);
+
+    Platform.runLater(() -> {
+      Scene scene = new Scene(vBox);
+      stage.setScene(scene);
+      latch.countDown();
+    });
+
+    latch.await();
+    Thread.sleep(300);
+    
+    FX instance = FX.lookup(stage, "#SUT");
+    FXMenu contextMenuFX = instance.getContextMenu();
+    assertNotEquals(instance, contextMenuFX);
+    Thread.sleep(100);
   }
 
   /**

@@ -68,6 +68,27 @@ public class AssertFX {
   }
 
   /**
+   * Assert that the given node is editable, i.e., it is a descendant of
+   * TextInputControl and it's "editable" property is true;
+   *
+   * @param node The node to be checked, needs to be a descendant of
+   * TextInputControl.
+   */
+  public static void assertEditable(Node node) {
+    if (node == null) {
+      throw new AssertionError(I18N.getString(NODE_IS_NULL));
+    }
+    if (node instanceof TextInputControl) {
+      TextInputControl textInputControl = (TextInputControl) node;
+      if (!textInputControl.isEditable()) {
+        throw new AssertionError(NODE + node + " should be editable, but is not.");
+      }
+    } else {
+      throw new AssertionError(NODE + node + " is no descendant of TextInputControl does not have an 'editable' property.");
+    }
+  }
+
+  /**
    * Assert that the given node is enabled, i.e., that it's "disabled" property
    * is false.
    *

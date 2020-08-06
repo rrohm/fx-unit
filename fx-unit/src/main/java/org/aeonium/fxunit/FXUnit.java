@@ -41,6 +41,8 @@ import javafx.stage.StageStyle;
  */
 public class FXUnit {
 
+  private static final String LOCATION_IS_NOT_SET = "Location is not set. Please provide a valid URL.";
+  
   private static Object controller;
   private static Parent root;
   private static Stage stage;
@@ -117,7 +119,7 @@ public class FXUnit {
    */
   public static void load(URL url) {
     if (url == null) {
-      throw new NullPointerException("Location is not set. Please provide a valid URL.");
+      throw new NullPointerException(LOCATION_IS_NOT_SET);
     }
 
     try {
@@ -134,7 +136,7 @@ public class FXUnit {
 
   public static void load(URL url, ResourceBundle rb) {
     if (url == null) {
-      throw new NullPointerException("Location is not set. Please provide a valid URL.");
+      throw new NullPointerException(LOCATION_IS_NOT_SET);
     }
     if (rb == null) {
       throw new NullPointerException("ResourceBundle must not be null.");
@@ -163,7 +165,7 @@ public class FXUnit {
    */
   public static void load(URL url, Class controllerClass) {
     if (url == null) {
-      throw new NullPointerException("Location is not set. Please provide a valid URL.");
+      throw new NullPointerException(LOCATION_IS_NOT_SET);
     }
 
     try {
