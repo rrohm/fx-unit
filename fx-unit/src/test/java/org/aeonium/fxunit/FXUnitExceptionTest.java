@@ -18,12 +18,14 @@
  */
 package org.aeonium.fxunit;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for {@link FXUnitException} (at present mostly for coverages
@@ -36,19 +38,19 @@ public class FXUnitExceptionTest {
   public FXUnitExceptionTest() {
   }
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpClass() {
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDownClass() {
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
   }
 

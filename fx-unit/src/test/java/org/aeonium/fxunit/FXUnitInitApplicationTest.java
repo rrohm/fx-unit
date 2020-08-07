@@ -28,13 +28,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.aeonium.fxunit.DriverApp.FXUnitApp;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for the {@link FXUnit} class, must init the FX framework only once,
@@ -48,19 +48,19 @@ public class FXUnitInitApplicationTest {
   public FXUnitInitApplicationTest() {
   }
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpClass() {
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDownClass() {
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
   }
 
@@ -101,7 +101,7 @@ public class FXUnitInitApplicationTest {
       Logger.getLogger(FXUnitTestBase.class.getName()).log(Level.SEVERE, null, ex);
     }
     
-    Assert.assertTrue("Do not fail initialization.", ok.getValue());
+    Assertions.assertTrue(ok.getValue(), "Do not fail initialization.");
   }
 //
 //  /**

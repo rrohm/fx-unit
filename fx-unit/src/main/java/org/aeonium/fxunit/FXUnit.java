@@ -33,6 +33,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.aeonium.fxunit.DriverApp.FXUnitApp;
 
 /**
  * Main class of the framework, provides only the static initializer method.

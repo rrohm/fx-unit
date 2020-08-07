@@ -28,17 +28,19 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.aeonium.fxunit.DriverApp.FXUnitApp;
 import org.aeonium.fxunit.FXHelper;
-import org.aeonium.fxunit.FXUnitApp;
 import static org.aeonium.fxunit.matchers.IsVisibleMatcher.DESCRIPTION;
 import org.hamcrest.Description;
 import org.hamcrest.StringDescription;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for {@link IsVisibleMatcher}.
@@ -48,8 +50,8 @@ import static org.junit.Assert.*;
 public class IsVisibleMatcherTest {
 
   Stage stage;
-  
-  @BeforeClass
+
+  @BeforeAll
   public static void setUpClass() {
     Thread t = new Thread("JavaFX Init Thread") {
       @Override
@@ -73,7 +75,7 @@ public class IsVisibleMatcherTest {
     }
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDownClass() {
     try {
       Thread.sleep(1000);
@@ -83,7 +85,7 @@ public class IsVisibleMatcherTest {
     }
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
     Platform.runLater(() -> {
       stage = new Stage();
@@ -91,7 +93,7 @@ public class IsVisibleMatcherTest {
     });
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     Platform.runLater(() -> {
       if (stage != null) {
@@ -102,13 +104,14 @@ public class IsVisibleMatcherTest {
 
   /**
    * Test of matchesSafely method, of class IsVisibleMatcher.
+   *
    * @throws java.lang.Exception any
    */
   @Test
   public void testMatchesSafely() throws Exception {
     System.out.println("matchesSafely");
     Node node = new Label();
-    
+
     final CountDownLatch latch = new CountDownLatch(1);
 
     Platform.runLater(() -> {
@@ -124,12 +127,12 @@ public class IsVisibleMatcherTest {
     boolean result = instance.matchesSafely(node);
     assertEquals(expResult, result);
   }
-  
+
   @Test
   public void testMatchesSafely_negative() throws Exception {
     System.out.println("matchesSafely_negative");
     Node node = new Label();
-    
+
     final CountDownLatch latch = new CountDownLatch(1);
 
     Platform.runLater(() -> {
@@ -145,15 +148,18 @@ public class IsVisibleMatcherTest {
     boolean result = instance.matchesSafely(node);
     assertEquals(expResult, result);
   }
-  
-  @Test(expected = NullPointerException.class)
+
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testMatchesSafely_null_throws() throws Exception {
     System.out.println("matchesSafely_null_throws");
-    Node node = null;
-    IsVisibleMatcher instance = new IsVisibleMatcher();
-    boolean expResult = false;
-    boolean result = instance.matchesSafely(node);
-    assertEquals(expResult, result);
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      Node node = null;
+      IsVisibleMatcher instance = new IsVisibleMatcher();
+      boolean expResult = false;
+      boolean result = instance.matchesSafely(node);
+      assertEquals(expResult, result);
+    });
   }
 
   /**
@@ -165,7 +171,7 @@ public class IsVisibleMatcherTest {
     Description d = new StringDescription();
     IsVisibleMatcher instance = new IsVisibleMatcher();
     instance.describeTo(d);
-    
+
     assertTrue(d.toString().contains(DESCRIPTION));
   }
 

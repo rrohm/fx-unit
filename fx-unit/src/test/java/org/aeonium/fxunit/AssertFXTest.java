@@ -40,14 +40,14 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.aeonium.fxunit.DriverApp.FXUnitApp;
 import org.aeonium.fxunit.i18n.I18N;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.Rule;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for the AssertFX class.
@@ -63,16 +63,14 @@ public class AssertFXTest {
   public AssertFXTest() {
   }
 
-  @Rule
-  public final ExpectedException expectedExceptionRule = ExpectedException.none();
-
-  @BeforeClass
+  @BeforeAll
   public static void setUpClass() {
+    final Class<? extends Application> appClass = FXUnitApp.class;
     Thread t = new Thread("JavaFX Init Thread") {
       @Override
       public void run() {
         try {
-          Application.launch(FXUnitApp.class, new String[0]);
+          Application.launch(appClass, new String[0]);
         } catch (IllegalStateException ex) {
           if (!ex.getMessage().equals("Application launch must not be called more than once")) {
             throw ex;
@@ -90,7 +88,7 @@ public class AssertFXTest {
     }
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDownClass() {
     try {
       Thread.sleep(1000);
@@ -100,7 +98,7 @@ public class AssertFXTest {
     }
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
     Platform.runLater(() -> {
       stage = new Stage();
@@ -108,7 +106,7 @@ public class AssertFXTest {
     });
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     Platform.runLater(() -> {
       if (stage != null) {
@@ -117,28 +115,34 @@ public class AssertFXTest {
     });
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertDisabled_negative_null() throws Exception {
     System.out.println("disabled");
-    AssertFX.assertDisabled(null);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      AssertFX.assertDisabled(null);
+    });
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertDisabled_negative_false() throws Exception {
     System.out.println("disabled");
-    Node node = new Button("button");
-    node.disableProperty().set(false);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      Node node = new Button("button");
+      node.disableProperty().set(false);
 
-    final CountDownLatch latch = new CountDownLatch(1);
+      final CountDownLatch latch = new CountDownLatch(1);
 
-    Platform.runLater(() -> {
-      Scene scene = new Scene(new VBox(node));
-      stage.setScene(scene);
-      latch.countDown();
+      Platform.runLater(() -> {
+        Scene scene = new Scene(new VBox(node));
+        stage.setScene(scene);
+        latch.countDown();
+      });
+
+      latch.await();
+      AssertFX.assertDisabled(node);
     });
-
-    latch.await();
-    AssertFX.assertDisabled(node);
   }
 
   @Test
@@ -159,28 +163,34 @@ public class AssertFXTest {
     AssertFX.assertDisabled(node);
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertEnabled_negative_null() throws Exception {
     System.out.println("enabled");
-    AssertFX.assertEnabled(null);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      AssertFX.assertEnabled(null);
+    });
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertEnabled_negative_false() throws Exception {
     System.out.println("enabled");
-    Node node = new Button("button");
-    node.disableProperty().set(true);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      Node node = new Button("button");
+      node.disableProperty().set(true);
 
-    final CountDownLatch latch = new CountDownLatch(1);
+      final CountDownLatch latch = new CountDownLatch(1);
 
-    Platform.runLater(() -> {
-      Scene scene = new Scene(new VBox(node));
-      stage.setScene(scene);
-      latch.countDown();
+      Platform.runLater(() -> {
+        Scene scene = new Scene(new VBox(node));
+        stage.setScene(scene);
+        latch.countDown();
+      });
+
+      latch.await();
+      AssertFX.assertEnabled(node);
     });
-
-    latch.await();
-    AssertFX.assertEnabled(node);
   }
 
   @Test
@@ -227,73 +237,87 @@ public class AssertFXTest {
   }
 
   @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertFocused_negative_null_node() throws Exception {
     System.out.println("assertFocused");
     Node node = null;
 
-    expectedExceptionRule.expectMessage(I18N.getString(I18N.NODE_IS_NULL));
-    AssertFX.assertFocused(node);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      AssertFX.assertFocused(node);
+    }, I18N.getString(I18N.NODE_IS_NULL));
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertFocused_negative() throws Exception {
     System.out.println("assertFocused");
-    Node node = new Button("button");
-    node.requestFocus();
+    Assertions.assertThrows(AssertionError.class, () -> {
+      Node node = new Button("button");
+      node.requestFocus();
 
-    final CountDownLatch latch = new CountDownLatch(1);
+      final CountDownLatch latch = new CountDownLatch(1);
 
-    Platform.runLater(() -> {
-      final Button node2 = new Button("other 2");
-      Scene scene = new Scene(new VBox(new Button("other 1"), node, node2));
-      stage.setScene(scene);
-      node2.requestFocus();
-      latch.countDown();
+      Platform.runLater(() -> {
+        final Button node2 = new Button("other 2");
+        Scene scene = new Scene(new VBox(new Button("other 1"), node, node2));
+        stage.setScene(scene);
+        node2.requestFocus();
+        latch.countDown();
+      });
+
+      Thread.sleep(200);
+      latch.await();
+      AssertFX.assertFocused(node);
     });
-
-    Thread.sleep(200);
-    latch.await();
-    AssertFX.assertFocused(node);
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertHasChildren_negative_null() throws Exception {
     System.out.println("assertHasChildren");
-    AssertFX.assertHasChildren(null, 0);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      AssertFX.assertHasChildren(null, 0);
+    });
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertHasChildren_negative_1() throws Exception {
     System.out.println("assertHasChildren");
-    Pane node = new Pane(new Label("a Child"));
+    Assertions.assertThrows(AssertionError.class, () -> {
+      Pane node = new Pane(new Label("a Child"));
 
-    final CountDownLatch latch = new CountDownLatch(1);
+      final CountDownLatch latch = new CountDownLatch(1);
 
-    Platform.runLater(() -> {
-      Scene scene = new Scene(new VBox(node));
-      stage.setScene(scene);
-      latch.countDown();
+      Platform.runLater(() -> {
+        Scene scene = new Scene(new VBox(node));
+        stage.setScene(scene);
+        latch.countDown();
+      });
+
+      latch.await();
+      AssertFX.assertHasChildren(node, 0);
     });
-
-    latch.await();
-    AssertFX.assertHasChildren(node, 0);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertHasChildren_negative_minus1() throws Exception {
     System.out.println("assertHasChildren");
-    Pane node = new Pane(new Label("a Child"));
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      Pane node = new Pane(new Label("a Child"));
 
-    final CountDownLatch latch = new CountDownLatch(1);
+      final CountDownLatch latch = new CountDownLatch(1);
 
-    Platform.runLater(() -> {
-      Scene scene = new Scene(new VBox(node));
-      stage.setScene(scene);
-      latch.countDown();
+      Platform.runLater(() -> {
+        Scene scene = new Scene(new VBox(node));
+        stage.setScene(scene);
+        latch.countDown();
+      });
+
+      latch.await();
+      AssertFX.assertHasChildren(node, -1);
     });
-
-    latch.await();
-    AssertFX.assertHasChildren(node, -1);
   }
 
   @Test
@@ -313,28 +337,34 @@ public class AssertFXTest {
     AssertFX.assertHasChildren(node, 0);
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertManaged_negative_null() throws Exception {
     System.out.println("assertManaged");
-    AssertFX.assertManaged(null);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      AssertFX.assertManaged(null);
+    });
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertManaged_negative_false() throws Exception {
     System.out.println("assertManaged");
-    Node node = new Button("button");
-    node.setManaged(false);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      Node node = new Button("button");
+      node.setManaged(false);
 
-    final CountDownLatch latch = new CountDownLatch(1);
+      final CountDownLatch latch = new CountDownLatch(1);
 
-    Platform.runLater(() -> {
-      Scene scene = new Scene(new VBox(node));
-      stage.setScene(scene);
-      latch.countDown();
+      Platform.runLater(() -> {
+        Scene scene = new Scene(new VBox(node));
+        stage.setScene(scene);
+        latch.countDown();
+      });
+
+      latch.await();
+      AssertFX.assertManaged(node);
     });
-
-    latch.await();
-    AssertFX.assertManaged(node);
   }
 
   @Test
@@ -355,28 +385,34 @@ public class AssertFXTest {
     AssertFX.assertManaged(node);
   }
 
-  @Test(expected = AssertionError.class)
+  @Test//(expected = AssertionError.class)
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertNotManaged_negative_null() throws Exception {
     System.out.println("assertNotManaged");
-    AssertFX.assertNotManaged(null);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      AssertFX.assertNotManaged(null);
+    });
   }
 
-  @Test(expected = AssertionError.class)
+  @Test//(expected = AssertionError.class)
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertNotManaged_negative_false() throws Exception {
     System.out.println("assertNotManaged");
-    Node node = new Button("button");
-    node.setManaged(true);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      Node node = new Button("button");
+      node.setManaged(true);
 
-    final CountDownLatch latch = new CountDownLatch(1);
+      final CountDownLatch latch = new CountDownLatch(1);
 
-    Platform.runLater(() -> {
-      Scene scene = new Scene(new VBox(node));
-      stage.setScene(scene);
-      latch.countDown();
+      Platform.runLater(() -> {
+        Scene scene = new Scene(new VBox(node));
+        stage.setScene(scene);
+        latch.countDown();
+      });
+
+      latch.await();
+      AssertFX.assertNotManaged(node);
     });
-
-    latch.await();
-    AssertFX.assertNotManaged(node);
   }
 
   @Test
@@ -397,10 +433,13 @@ public class AssertFXTest {
     AssertFX.assertNotManaged(node);
   }
 
-  @Test(expected = AssertionError.class)
+  @Test//(expected = AssertionError.class)
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertNotSelected_negative_null() throws Exception {
     System.out.println("assertNotSelected");
-    AssertFX.assertNotSelected(null);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      AssertFX.assertNotSelected(null);
+    });
   }
 
   /**
@@ -424,27 +463,32 @@ public class AssertFXTest {
     AssertFX.assertNotShowing(stage);
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertNotShowing_negative() throws Exception {
     System.out.println("assertNotShowing");
 
-    final CountDownLatch latch = new CountDownLatch(1);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      final CountDownLatch latch = new CountDownLatch(1);
 
-    Platform.runLater(() -> {
-      stage.show();
-      latch.countDown();
+      Platform.runLater(() -> {
+        stage.show();
+        latch.countDown();
+      });
+
+      latch.await();
+
+      AssertFX.assertNotShowing(stage);
     });
-
-    latch.await();
-
-    AssertFX.assertNotShowing(stage);
   }
 
   @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertNotShowing_negative_null_window() throws Exception {
     System.out.println("assertNotShowing");
-    expectedExceptionRule.expectMessage(I18N.getString(I18N.WINDOW_IS_NULL));
-    AssertFX.assertNotShowing(null);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      AssertFX.assertNotShowing(null);
+    }, I18N.getString(I18N.WINDOW_IS_NULL));
   }
 
   /**
@@ -471,31 +515,36 @@ public class AssertFXTest {
     AssertFX.assertNotVisible(node);
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertNotVisible_negative() throws Exception {
     System.out.println("assertNotVisible");
-    Node node = new Button("button");
-    node.requestFocus();
+    Assertions.assertThrows(AssertionError.class, () -> {
+      Node node = new Button("button");
+      node.requestFocus();
 
-    final CountDownLatch latch = new CountDownLatch(1);
+      final CountDownLatch latch = new CountDownLatch(1);
 
-    Platform.runLater(() -> {
-      Scene scene = new Scene(new VBox(new Button("other 1"), node, new Button("other 2")));
-      stage.setScene(scene);
-      node.setVisible(true);
-      latch.countDown();
+      Platform.runLater(() -> {
+        Scene scene = new Scene(new VBox(new Button("other 1"), node, new Button("other 2")));
+        stage.setScene(scene);
+        node.setVisible(true);
+        latch.countDown();
+      });
+
+      latch.await();
+      AssertFX.assertNotVisible(node);
     });
-
-    latch.await();
-    AssertFX.assertNotVisible(node);
   }
 
   @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertNotVisible_negative_null_node() throws Exception {
     System.out.println("assertNotVisible");
-    Node node = null;
-    expectedExceptionRule.expectMessage(I18N.getString(I18N.NODE_IS_NULL));
-    AssertFX.assertNotVisible(node);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      Node node = null;
+      AssertFX.assertNotVisible(node);
+    }, I18N.getString(I18N.NODE_IS_NULL));
   }
 
   @Test
@@ -525,64 +574,73 @@ public class AssertFXTest {
     AssertFX.assertNotSelected(tb2);
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertSelected_Toggle_false() throws Exception {
     System.out.println("assertSelected");
-    FlowPane tb = new FlowPane(Orientation.VERTICAL);
-    ToggleButton tb1 = new ToggleButton("First");
-    tb1.setId("first");
-    ToggleButton tb2 = new ToggleButton("Second");
-    tb2.setId("second");
-    ToggleButton tb3 = new ToggleButton("Second");
-    tb3.setId("third");
+    Assertions.assertThrows(AssertionError.class, () -> {
+      FlowPane tb = new FlowPane(Orientation.VERTICAL);
+      ToggleButton tb1 = new ToggleButton("First");
+      tb1.setId("first");
+      ToggleButton tb2 = new ToggleButton("Second");
+      tb2.setId("second");
+      ToggleButton tb3 = new ToggleButton("Second");
+      tb3.setId("third");
 
-    String id = "second";
-    final CountDownLatch latch = new CountDownLatch(1);
+      String id = "second";
+      final CountDownLatch latch = new CountDownLatch(1);
 
-    Platform.runLater(() -> {
-      Scene scene = new Scene(tb);
-      tb.getChildren().addAll(tb1, tb2, tb3);
-      tb1.fire();
-      stage.setScene(scene);
-      latch.countDown();
+      Platform.runLater(() -> {
+        Scene scene = new Scene(tb);
+        tb.getChildren().addAll(tb1, tb2, tb3);
+        tb1.fire();
+        stage.setScene(scene);
+        latch.countDown();
+      });
+
+      latch.await();
+      AssertFX.assertSelected(tb2);
     });
-
-    latch.await();
-    AssertFX.assertSelected(tb2);
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertSelected_Toggle_negative_null() throws Exception {
     System.out.println("assertSelected");
-    ToggleButton tb1 = null;
-    AssertFX.assertSelected(tb1);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      ToggleButton tb1 = null;
+      AssertFX.assertSelected(tb1);
+    });
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertSelected_Toggle_negative_notSelected() throws Exception {
     System.out.println("assertSelected");
-    FlowPane tb = new FlowPane(Orientation.VERTICAL);
-    ToggleButton tb1 = new ToggleButton("First");
-    tb1.setId("first");
-    ToggleButton tb2 = new ToggleButton("Second");
-    tb2.setId("second");
-    ToggleButton tb3 = new ToggleButton("Second");
-    tb3.setId("third");
+    Assertions.assertThrows(AssertionError.class, () -> {
+      FlowPane tb = new FlowPane(Orientation.VERTICAL);
+      ToggleButton tb1 = new ToggleButton("First");
+      tb1.setId("first");
+      ToggleButton tb2 = new ToggleButton("Second");
+      tb2.setId("second");
+      ToggleButton tb3 = new ToggleButton("Second");
+      tb3.setId("third");
 
-    String id = "second";
-    final CountDownLatch latch = new CountDownLatch(1);
+      String id = "second";
+      final CountDownLatch latch = new CountDownLatch(1);
 
-    Platform.runLater(() -> {
-      Scene scene = new Scene(tb);
-      tb.getChildren().addAll(tb1, tb2, tb3);
-      tb1.fire();
-      stage.setScene(scene);
-      latch.countDown();
+      Platform.runLater(() -> {
+        Scene scene = new Scene(tb);
+        tb.getChildren().addAll(tb1, tb2, tb3);
+        tb1.fire();
+        stage.setScene(scene);
+        latch.countDown();
+      });
+
+      latch.await();
+      AssertFX.assertNotSelected(tb1);
+      AssertFX.assertSelected(tb2);
     });
-
-    latch.await();
-    AssertFX.assertNotSelected(tb1);
-    AssertFX.assertSelected(tb2);
   }
 
   /**
@@ -616,111 +674,126 @@ public class AssertFXTest {
     AssertFX.assertSelected(tabPane, id);
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertSelected_TabPane_negative() throws Exception {
     System.out.println("assertSelected");
-    TabPane tabPane = new TabPane();
-    Tab tab1 = new Tab("First");
-    tab1.setId("first");
-    Tab tab2 = new Tab("Second");
-    tab2.setId("second");
-    Tab tab3 = new Tab("Second");
-    tab3.setId("third");
+    Assertions.assertThrows(AssertionError.class, () -> {
+      TabPane tabPane = new TabPane();
+      Tab tab1 = new Tab("First");
+      tab1.setId("first");
+      Tab tab2 = new Tab("Second");
+      tab2.setId("second");
+      Tab tab3 = new Tab("Second");
+      tab3.setId("third");
 
-    String id = "first";
-    final CountDownLatch latch = new CountDownLatch(1);
+      String id = "first";
+      final CountDownLatch latch = new CountDownLatch(1);
 
-    Platform.runLater(() -> {
-      Scene scene = new Scene(tabPane);
-      tabPane.getTabs().addAll(tab1, tab2, tab3);
-      tabPane.getSelectionModel().select(tab2);
-      stage.setScene(scene);
-      latch.countDown();
+      Platform.runLater(() -> {
+        Scene scene = new Scene(tabPane);
+        tabPane.getTabs().addAll(tab1, tab2, tab3);
+        tabPane.getSelectionModel().select(tab2);
+        stage.setScene(scene);
+        latch.countDown();
+      });
+
+      latch.await();
+      AssertFX.assertSelected(tabPane, id);
     });
-
-    latch.await();
-    AssertFX.assertSelected(tabPane, id);
   }
 
   @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertSelected_TabPane_negative_tabPane_null() throws Exception {
     System.out.println("assertSelected");
-    TabPane tabPane = null;
 
-    expectedExceptionRule.expectMessage(I18N.getString(I18N.TABPANE_IS_NULL));
-    AssertFX.assertSelected(tabPane, "something");
+    Assertions.assertThrows(AssertionError.class, () -> {
+      TabPane tabPane = null;
+
+      AssertFX.assertSelected(tabPane, "something");
+    }, I18N.getString(I18N.TABPANE_IS_NULL));
   }
 
   @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertSelected_TabPane_negative_id_null() throws Exception {
     System.out.println("assertSelected");
-    TabPane tabPane = new TabPane();
-    Tab tab1 = new Tab("First");
-    tab1.setId("first");
-    Tab tab2 = new Tab("Second");
-    tab2.setId("second");
-    Tab tab3 = new Tab("Second");
-    tab3.setId("third");
+    Assertions.assertThrows(AssertionError.class, () -> {
+      TabPane tabPane = new TabPane();
+      Tab tab1 = new Tab("First");
+      tab1.setId("first");
+      Tab tab2 = new Tab("Second");
+      tab2.setId("second");
+      Tab tab3 = new Tab("Second");
+      tab3.setId("third");
 
-    String id = "second";
-    final CountDownLatch latch = new CountDownLatch(1);
+      String id = "second";
+      final CountDownLatch latch = new CountDownLatch(1);
 
-    Platform.runLater(() -> {
-      Scene scene = new Scene(tabPane);
-      tabPane.getTabs().addAll(tab1, tab2, tab3);
-      tabPane.getSelectionModel().select(tab2);
-      stage.setScene(scene);
-      latch.countDown();
-    });
+      Platform.runLater(() -> {
+        Scene scene = new Scene(tabPane);
+        tabPane.getTabs().addAll(tab1, tab2, tab3);
+        tabPane.getSelectionModel().select(tab2);
+        stage.setScene(scene);
+        latch.countDown();
+      });
 
-    latch.await();
-    expectedExceptionRule.expectMessage(I18N.getString(I18N.ID_IS_NULL));
-    AssertFX.assertSelected(tabPane, null);
+      latch.await();
+      Thread.sleep(1000);
+      AssertFX.assertSelected(tabPane, null);
+    }, I18N.getString(I18N.ID_IS_NULL));
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertSelected_TabPane_negative_id_nonexistent() throws Exception {
     System.out.println("assertSelected");
-    TabPane tabPane = new TabPane();
-    Tab tab1 = new Tab("First");
-    tab1.setId("first");
-    Tab tab2 = new Tab("Second");
-    tab2.setId("second");
-    Tab tab3 = new Tab("Second");
-    tab3.setId("third");
+    Assertions.assertThrows(AssertionError.class, () -> {
+      TabPane tabPane = new TabPane();
+      Tab tab1 = new Tab("First");
+      tab1.setId("first");
+      Tab tab2 = new Tab("Second");
+      tab2.setId("second");
+      Tab tab3 = new Tab("Second");
+      tab3.setId("third");
 
-    String id = "dows not exist";
-    final CountDownLatch latch = new CountDownLatch(1);
+      String id = "dows not exist";
+      final CountDownLatch latch = new CountDownLatch(1);
 
-    Platform.runLater(() -> {
-      Scene scene = new Scene(tabPane);
-      tabPane.getTabs().addAll(tab1, tab2, tab3);
-      tabPane.getSelectionModel().select(tab2);
-      stage.setScene(scene);
-      latch.countDown();
+      Platform.runLater(() -> {
+        Scene scene = new Scene(tabPane);
+        tabPane.getTabs().addAll(tab1, tab2, tab3);
+        tabPane.getSelectionModel().select(tab2);
+        stage.setScene(scene);
+        latch.countDown();
+      });
+
+      latch.await();
+      AssertFX.assertSelected(tabPane, id);
     });
-
-    latch.await();
-    AssertFX.assertSelected(tabPane, id);
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertSelected_TabPane_negative_null_selection() throws Exception {
     System.out.println("assertSelected");
-    TabPane tabPane = new TabPane();
+    Assertions.assertThrows(AssertionError.class, () -> {
+      TabPane tabPane = new TabPane();
 
-    String id = "first";
-    final CountDownLatch latch = new CountDownLatch(1);
+      String id = "first";
+      final CountDownLatch latch = new CountDownLatch(1);
 
-    Platform.runLater(() -> {
-      Scene scene = new Scene(tabPane);
-      tabPane.getSelectionModel().clearSelection();
-      stage.setScene(scene);
-      latch.countDown();
+      Platform.runLater(() -> {
+        Scene scene = new Scene(tabPane);
+        tabPane.getSelectionModel().clearSelection();
+        stage.setScene(scene);
+        latch.countDown();
+      });
+
+      latch.await();
+      AssertFX.assertSelected(tabPane, id);
     });
-
-    latch.await();
-    AssertFX.assertSelected(tabPane, id);
   }
 
   /**
@@ -743,67 +816,81 @@ public class AssertFXTest {
     AssertFX.assertShowing(stage);
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertShowing_negative() throws Exception {
     System.out.println("assertShowing");
 
-    final CountDownLatch latch = new CountDownLatch(1);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      final CountDownLatch latch = new CountDownLatch(1);
 
-    Platform.runLater(() -> {
-      stage.hide();
-      latch.countDown();
+      Platform.runLater(() -> {
+        stage.hide();
+        latch.countDown();
+      });
+
+      latch.await();
+      AssertFX.assertShowing(stage);
     });
-
-    latch.await();
-    AssertFX.assertShowing(stage);
   }
 
   @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertShowing_negative_null_window() throws Exception {
     System.out.println("assertNotShowing");
-    expectedExceptionRule.expectMessage(I18N.getString(I18N.WINDOW_IS_NULL));
-    AssertFX.assertShowing(null);
+
+    Assertions.assertThrows(AssertionError.class, () -> {
+      AssertFX.assertShowing(null);
+    }, I18N.getString(I18N.WINDOW_IS_NULL));
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertText_negative_labeled_null() throws Exception {
     System.out.println("assertText");
-    Labeled labeled = null;
-    AssertFX.assertText(labeled, TEXT);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      Labeled labeled = null;
+      AssertFX.assertText(labeled, TEXT);
+    });
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertText_negative_labeled_false() throws Exception {
     System.out.println("assertText");
-    Labeled labeled = new Label("");
+    Assertions.assertThrows(AssertionError.class, () -> {
+      Labeled labeled = new Label("");
 
-    final CountDownLatch latch = new CountDownLatch(1);
+      final CountDownLatch latch = new CountDownLatch(1);
 
-    Platform.runLater(() -> {
-      Scene scene = new Scene(new VBox(labeled));
-      stage.setScene(scene);
-      latch.countDown();
+      Platform.runLater(() -> {
+        Scene scene = new Scene(new VBox(labeled));
+        stage.setScene(scene);
+        latch.countDown();
+      });
+
+      latch.await();
+      AssertFX.assertText(labeled, TEXT);
     });
-
-    latch.await();
-    AssertFX.assertText(labeled, TEXT);
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
   public void testAssertText_negative_text_null() throws Exception {
     System.out.println("assertText");
-    Labeled labeled = new Label("");
+    Assertions.assertThrows(AssertionError.class, () -> {
+      Labeled labeled = new Label("");
 
-    final CountDownLatch latch = new CountDownLatch(1);
+      final CountDownLatch latch = new CountDownLatch(1);
 
-    Platform.runLater(() -> {
-      Scene scene = new Scene(new VBox(labeled));
-      stage.setScene(scene);
-      latch.countDown();
+      Platform.runLater(() -> {
+        Scene scene = new Scene(new VBox(labeled));
+        stage.setScene(scene);
+        latch.countDown();
+      });
+
+      latch.await();
+      AssertFX.assertText(labeled, null);
     });
-
-    latch.await();
-    AssertFX.assertText(labeled, null);
   }
 
   @Test
@@ -823,43 +910,52 @@ public class AssertFXTest {
     AssertFX.assertText(labeled, TEXT);
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertText_negative_textInputControl_null() throws Exception {
     System.out.println("assertText");
-    TextInputControl textInputControl = null;
-    AssertFX.assertText(textInputControl, TEXT);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      TextInputControl textInputControl = null;
+      AssertFX.assertText(textInputControl, TEXT);
+    });
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertText_negative_textInputControl_false() throws Exception {
     System.out.println("assertText");
-    TextInputControl textInputControl = new TextField("");
-    final CountDownLatch latch = new CountDownLatch(1);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      TextInputControl textInputControl = new TextField("");
+      final CountDownLatch latch = new CountDownLatch(1);
 
-    Platform.runLater(() -> {
-      Scene scene = new Scene(new VBox(textInputControl));
-      stage.setScene(scene);
-      latch.countDown();
+      Platform.runLater(() -> {
+        Scene scene = new Scene(new VBox(textInputControl));
+        stage.setScene(scene);
+        latch.countDown();
+      });
+
+      latch.await();
+      AssertFX.assertText(textInputControl, TEXT);
     });
-
-    latch.await();
-    AssertFX.assertText(textInputControl, TEXT);
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertText_negative_textInputControl_text_null() throws Exception {
     System.out.println("assertText");
-    TextInputControl textInputControl = new TextField("");
-    final CountDownLatch latch = new CountDownLatch(1);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      TextInputControl textInputControl = new TextField("");
+      final CountDownLatch latch = new CountDownLatch(1);
 
-    Platform.runLater(() -> {
-      Scene scene = new Scene(new VBox(textInputControl));
-      stage.setScene(scene);
-      latch.countDown();
+      Platform.runLater(() -> {
+        Scene scene = new Scene(new VBox(textInputControl));
+        stage.setScene(scene);
+        latch.countDown();
+      });
+
+      latch.await();
+      AssertFX.assertText(textInputControl, null);
     });
-
-    latch.await();
-    AssertFX.assertText(textInputControl, null);
   }
 
   @Test
@@ -878,64 +974,76 @@ public class AssertFXTest {
     AssertFX.assertText(textInputControl, TEXT);
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertTooltip_negative_null() throws Exception {
     System.out.println("assertTooltipText");
-    Control control = null;
-    AssertFX.assertTooltipText(control, TEXT);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      Control control = null;
+      AssertFX.assertTooltipText(control, TEXT);
+    });
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertTooltip_negative_no_tooltip() throws Exception {
     System.out.println("assertTooltipText");
-    Control control = new Button();
+    Assertions.assertThrows(AssertionError.class, () -> {
+      Control control = new Button();
 
-    final CountDownLatch latch = new CountDownLatch(1);
+      final CountDownLatch latch = new CountDownLatch(1);
 
-    Platform.runLater(() -> {
-      Scene scene = new Scene(new VBox(control));
-      stage.setScene(scene);
-      latch.countDown();
+      Platform.runLater(() -> {
+        Scene scene = new Scene(new VBox(control));
+        stage.setScene(scene);
+        latch.countDown();
+      });
+
+      latch.await();
+      AssertFX.assertTooltipText(control, TEXT);
     });
-
-    latch.await();
-    AssertFX.assertTooltipText(control, TEXT);
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertTooltip_negative_wrong_tooltip() throws Exception {
     System.out.println("assertTooltipText");
-    Control control = new Button();
-    control.setTooltip(new Tooltip("other text"));
+    Assertions.assertThrows(AssertionError.class, () -> {
+      Control control = new Button();
+      control.setTooltip(new Tooltip("other text"));
 
-    final CountDownLatch latch = new CountDownLatch(1);
+      final CountDownLatch latch = new CountDownLatch(1);
 
-    Platform.runLater(() -> {
-      Scene scene = new Scene(new VBox(control));
-      stage.setScene(scene);
-      latch.countDown();
+      Platform.runLater(() -> {
+        Scene scene = new Scene(new VBox(control));
+        stage.setScene(scene);
+        latch.countDown();
+      });
+
+      latch.await();
+      AssertFX.assertTooltipText(control, TEXT);
     });
-
-    latch.await();
-    AssertFX.assertTooltipText(control, TEXT);
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertTooltip_negative_futile_tooltip() throws Exception {
     System.out.println("assertTooltipText");
-    Control control = new Button();
-    control.setTooltip(new Tooltip("other text"));
+    Assertions.assertThrows(AssertionError.class, () -> {
+      Control control = new Button();
+      control.setTooltip(new Tooltip("other text"));
 
-    final CountDownLatch latch = new CountDownLatch(1);
+      final CountDownLatch latch = new CountDownLatch(1);
 
-    Platform.runLater(() -> {
-      Scene scene = new Scene(new VBox(control));
-      stage.setScene(scene);
-      latch.countDown();
+      Platform.runLater(() -> {
+        Scene scene = new Scene(new VBox(control));
+        stage.setScene(scene);
+        latch.countDown();
+      });
+
+      latch.await();
+      AssertFX.assertTooltipText(control, null);
     });
-
-    latch.await();
-    AssertFX.assertTooltipText(control, null);
   }
 
   /**
@@ -962,31 +1070,36 @@ public class AssertFXTest {
     AssertFX.assertVisible(node);
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertVisible_negative() throws Exception {
     System.out.println("assertVisible");
-    Node node = new Button("button");
-    node.requestFocus();
+    Assertions.assertThrows(AssertionError.class, () -> {
+      Node node = new Button("button");
+      node.requestFocus();
 
-    final CountDownLatch latch = new CountDownLatch(1);
+      final CountDownLatch latch = new CountDownLatch(1);
 
-    Platform.runLater(() -> {
-      Scene scene = new Scene(new VBox(new Button("other 1"), node, new Button("other 2")));
-      stage.setScene(scene);
-      node.setVisible(false);
-      latch.countDown();
+      Platform.runLater(() -> {
+        Scene scene = new Scene(new VBox(new Button("other 1"), node, new Button("other 2")));
+        stage.setScene(scene);
+        node.setVisible(false);
+        latch.countDown();
+      });
+
+      latch.await();
+      AssertFX.assertVisible(node);
     });
-
-    latch.await();
-    AssertFX.assertVisible(node);
   }
 
   @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertVisible_negative_null_node() throws Exception {
     System.out.println("assertVisible");
     Node node = null;
-    expectedExceptionRule.expectMessage(I18N.getString(I18N.NODE_IS_NULL));
-    AssertFX.assertVisible(node);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      AssertFX.assertVisible(node);
+    }, I18N.getString(I18N.NODE_IS_NULL));
   }
 
 }

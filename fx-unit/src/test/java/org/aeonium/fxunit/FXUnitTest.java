@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2020 Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;.
  *
@@ -28,17 +29,18 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.aeonium.fxunit.DriverApp.FXUnitApp;
 import org.aeonium.fxunit.testUI.FXMLController;
 import org.aeonium.fxunit.testUI.FXMLController1;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for the {@link FXUnit} class, must init the FX framework only once,
@@ -54,19 +56,19 @@ public class FXUnitTest {
   public FXUnitTest() {
   }
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpClass() {
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDownClass() {
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
   }
 
@@ -94,7 +96,7 @@ public class FXUnitTest {
       Logger.getLogger(FXUnitTestBase.class.getName()).log(Level.SEVERE, null, ex);
     }
 
-    Assert.assertTrue("Do not fail initialization.", ok.getValue());
+    Assertions.assertTrue(ok.getValue(), "Do not fail initialization.");
   }
 
   @Test
@@ -108,26 +110,30 @@ public class FXUnitTest {
     assertNull(FXUnit.getStage());
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void testLoad_invalidFXML() {
     System.out.println("load_invalidFXML");
-    initializeToolkit();
+    Assertions.assertThrows(RuntimeException.class, () -> {
+      initializeToolkit();
 
-    FXUnit.load(FXMLController.class.getResource("FXML_error.fxml"));
-    assertNotNull(FXUnit.getController());
-    assertNotNull(FXUnit.getRoot());
-    assertNull(FXUnit.getStage());
+      FXUnit.load(FXMLController.class.getResource("FXML_error.fxml"));
+      assertNotNull(FXUnit.getController());
+      assertNotNull(FXUnit.getRoot());
+      assertNull(FXUnit.getStage());
+    });
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testLoad_nonExistent() {
     System.out.println("load_nonExistent");
-    initializeToolkit();
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      initializeToolkit();
 
-    FXUnit.load(FXMLController.class.getResource("FXML-does-not-exist.fxml"));
-    assertNotNull(FXUnit.getController());
-    assertNotNull(FXUnit.getRoot());
-    assertNull(FXUnit.getStage());
+      FXUnit.load(FXMLController.class.getResource("FXML-does-not-exist.fxml"));
+      assertNotNull(FXUnit.getController());
+      assertNotNull(FXUnit.getRoot());
+      assertNull(FXUnit.getStage());
+    });
   }
 
   @Test
@@ -137,19 +143,21 @@ public class FXUnitTest {
 
     FXUnit.load(FXMLController.class.getResource("FXML_noController.fxml"), FXMLController1.class);
     assertNotNull(FXUnit.getController());
-    assertTrue("is FXMLController1.class", FXUnit.getController() instanceof FXMLController1);
+    assertTrue(FXUnit.getController() instanceof FXMLController1, "is FXMLController1.class");
     assertNotNull(FXUnit.getRoot());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testLoadController_nonExistent() {
     System.out.println("loadController_nonExistent");
-    initializeToolkit();
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      initializeToolkit();
 
-    FXUnit.load(FXMLController.class.getResource("FXML-does-not-exist.fxml"), FXMLController1.class);
-    assertNotNull(FXUnit.getController());
-    assertNotNull(FXUnit.getRoot());
-    assertNull(FXUnit.getStage());
+      FXUnit.load(FXMLController.class.getResource("FXML-does-not-exist.fxml"), FXMLController1.class);
+      assertNotNull(FXUnit.getController());
+      assertNotNull(FXUnit.getRoot());
+      assertNull(FXUnit.getStage());
+    });
   }
 
   /**
@@ -174,7 +182,7 @@ public class FXUnitTest {
 
     FXUnit.show(FXMLController.class.getResource("FXML_noController.fxml"), FXMLController1.class);
     assertNotNull(FXUnit.getController());
-    assertTrue("is FXMLController1.class", FXUnit.getController() instanceof FXMLController1);
+    assertTrue(FXUnit.getController() instanceof FXMLController1, "is FXMLController1.class");
     assertNotNull(FXUnit.getStage());
     assertNotNull(FXUnit.getRoot());
   }
@@ -210,6 +218,6 @@ public class FXUnitTest {
     FXUnit.closeStage();
     long timeAfter = System.currentTimeMillis();
 
-    assertTrue("Delay time >= 1000 ms", timeAfter >= timeBefore + 1000);
+    assertTrue(timeAfter >= timeBefore + 1000, "Delay time >= 1000 ms");
   }
 }

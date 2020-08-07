@@ -28,17 +28,19 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.aeonium.fxunit.DriverApp.FXUnitApp;
 import org.aeonium.fxunit.FXHelper;
-import org.aeonium.fxunit.FXUnitApp;
 import static org.aeonium.fxunit.matchers.IsNotVisibleMatcher.DESCRIPTION;
 import org.hamcrest.Description;
 import org.hamcrest.StringDescription;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for {@link IsNotVisibleMatcher}.
@@ -49,7 +51,7 @@ public class IsNotVisibleMatcherTest {
 
   Stage stage;
   
-  @BeforeClass
+  @BeforeAll
   public static void setUpClass() {
     Thread t = new Thread("JavaFX Init Thread") {
       @Override
@@ -73,7 +75,7 @@ public class IsNotVisibleMatcherTest {
     }
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDownClass() {
     try {
       Thread.sleep(1000);
@@ -83,7 +85,7 @@ public class IsNotVisibleMatcherTest {
     }
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
     Platform.runLater(() -> {
       stage = new Stage();
@@ -91,7 +93,7 @@ public class IsNotVisibleMatcherTest {
     });
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     Platform.runLater(() -> {
       if (stage != null) {
@@ -146,14 +148,17 @@ public class IsNotVisibleMatcherTest {
     assertEquals(expResult, result);
   }
   
-  @Test(expected = NullPointerException.class)
+  @Test
+  @SuppressWarnings("ThrowableResultIgnored")
   public void testMatchesSafely_null_throws() throws Exception {
     System.out.println("matchesSafely_null_throws");
-    Node node = null;
-    IsNotVisibleMatcher instance = new IsNotVisibleMatcher();
-    boolean expResult = false;
-    boolean result = instance.matchesSafely(node);
-    assertEquals(expResult, result);
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      Node node = null;
+      IsNotVisibleMatcher instance = new IsNotVisibleMatcher();
+      boolean expResult = false;
+      boolean result = instance.matchesSafely(node);
+      assertEquals(expResult, result);
+    });
   }
 
   /**

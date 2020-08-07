@@ -38,12 +38,16 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.aeonium.fxunit.DriverApp.FXUnitApp;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for the FXHelper class.
@@ -58,12 +62,12 @@ public class FXHelperTest {
     // no op
   }
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpClass() {
     Thread t = new Thread("JavaFX Init Thread") {
       @Override
       public void run() {
-        try{
+        try {
           Application.launch(FXUnitApp.class, new String[0]);
         } catch (IllegalStateException ex) {
           if (!ex.getMessage().equals("Application launch must not be called more than once")) {
@@ -82,11 +86,11 @@ public class FXHelperTest {
     }
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDownClass() {
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
     Platform.runLater(() -> {
       stage = new Stage();
@@ -94,7 +98,7 @@ public class FXHelperTest {
     });
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     Platform.runLater(() -> {
       if (stage != null) {
@@ -127,9 +131,9 @@ public class FXHelperTest {
     FXHelper.clearText(labeled);
     assertEquals("", labeled.getText());
   }
- 
+
   @Test
-  public void testDelay(){
+  public void testDelay() {
     int delay = FXHelper.getDelay();
     final int delta = 100;
     FXHelper.setDelay(delay + delta);
@@ -138,6 +142,7 @@ public class FXHelperTest {
 
   /**
    * Test of findTab method, of class FXHelper.
+   *
    * @throws java.lang.InterruptedException If interrupted
    */
   @Test
@@ -150,23 +155,23 @@ public class FXHelperTest {
     final Tab tab2 = new Tab("2nd Tab");
     tab2.setId(tabID2);
     final TabPane tabPane = new TabPane(tab1, tab2);
-    
+
     final CountDownLatch latch = new CountDownLatch(1);
-    
+
     Platform.runLater(() -> {
       Scene scene = new Scene(tabPane);
       stage.setScene(scene);
       latch.countDown();
     });
-    
+
     latch.await();
-    
+
     Tab result = FXHelper.findTab(tabPane, tabID1);
     assertEquals(tab1, result);
     result = FXHelper.findTab(tabPane, tabID2);
     assertEquals(tab2, result);
   }
-  
+
   @Test
   public void testFindTab_nonexisting_id() throws InterruptedException {
     System.out.println("findTab");
@@ -177,15 +182,15 @@ public class FXHelperTest {
     final Tab tab2 = new Tab("2nd Tab");
     tab2.setId(tabID2);
     final TabPane tabPane = new TabPane(tab1, tab2);
-    
+
     final CountDownLatch latch = new CountDownLatch(1);
-    
+
     Platform.runLater(() -> {
       Scene scene = new Scene(tabPane);
       stage.setScene(scene);
       latch.countDown();
     });
-    
+
     latch.await();
     Tab result = FXHelper.findTab(tabPane, tabID1);
     assertEquals(tab1, result);
@@ -206,7 +211,7 @@ public class FXHelperTest {
     final Node node2 = new Button("other");
 
     final CountDownLatch latch = new CountDownLatch(1);
-    
+
     Platform.runLater(() -> {
       final VBox vBox = new VBox(node, node2);
       Scene scene = new Scene(vBox);
@@ -218,10 +223,10 @@ public class FXHelperTest {
 
     latch.await();
     Thread.sleep(300);
-    
+
     assertEquals(true, node2.isFocused());
     assertEquals(false, node.isFocused());
-    
+
     FXHelper.focus(node);
     assertEquals(true, node.isFocused());
     assertEquals(false, node2.isFocused());
@@ -229,45 +234,48 @@ public class FXHelperTest {
 
   /**
    * Test of invokeOnFXThread method, of class FXHelper.
+   *
    * @throws java.lang.Exception any
    */
   @Test
-  public void testInvokeOnFXThread() throws Exception{
+  public void testInvokeOnFXThread() throws Exception {
     System.out.println("invokeOnFXThread");
     BooleanProperty done = new SimpleBooleanProperty(false);
     final CountDownLatch latch = new CountDownLatch(1);
-    
+
     FXHelper.invokeOnFXThread(() -> {
       done.set(true);
       latch.countDown();
     });
-    
+
     latch.await();
-    assertTrue(done.get());
+    Assertions.assertTrue(done.get());
   }
-  
+
   @Test
-  public void testInvokeOnFXThread_onFXThread() throws Exception{
+  public void testInvokeOnFXThread_onFXThread() throws Exception {
     System.out.println("invokeOnFXThread");
     BooleanProperty done = new SimpleBooleanProperty(false);
     final CountDownLatch latch = new CountDownLatch(1);
-    
+
     Platform.runLater(() -> {
       FXHelper.invokeOnFXThread(() -> {
         done.set(true);
         latch.countDown();
       });
     });
-    
+
     latch.await();
-    assertTrue(done.get());
+    Assertions.assertTrue(done.get());
   }
-  
-  @Test(expected = NullPointerException.class)
+
+  @Test
   public void testInvokeOnFXThread_throws_when_null_input() {
     System.out.println("invokeOnFXThread");
-    Runnable runnable = null;
-    FXHelper.invokeOnFXThread(runnable);
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      Runnable runnable = null;
+      FXHelper.invokeOnFXThread(runnable);
+    });
   }
 
   /**
@@ -275,11 +283,13 @@ public class FXHelperTest {
    *
    * @throws java.lang.Exception any
    */
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testRunAndWait_throws_when_null_input() throws Exception {
     System.out.println("runAndWait");
-    Runnable runnable = null;
-    FXHelper.runAndWait(runnable);
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      Runnable runnable = null;
+      FXHelper.runAndWait(runnable);
+    });
   }
 
   @Test
@@ -287,14 +297,14 @@ public class FXHelperTest {
     System.out.println("runAndWait");
     BooleanProperty done = new SimpleBooleanProperty(false);
     final CountDownLatch latch = new CountDownLatch(1);
-    
+
     FXHelper.runAndWait(() -> {
       done.set(true);
       latch.countDown();
     });
-    
+
     latch.await();
-    assertTrue(done.get());
+    Assertions.assertTrue(done.get());
   }
 
   @Test
@@ -302,7 +312,7 @@ public class FXHelperTest {
     System.out.println("runAndWait");
     BooleanProperty done = new SimpleBooleanProperty(false);
     final CountDownLatch latch = new CountDownLatch(1);
-    
+
     Platform.runLater(() -> {
       try {
         FXHelper.runAndWait(() -> {
@@ -311,16 +321,17 @@ public class FXHelperTest {
         });
       } catch (ExecutionException ex) {
         Logger.getLogger(FXHelperTest.class.getName()).log(Level.SEVERE, null, ex);
-        assertFalse("Exception thrown: " + ex.getMessage(), true);
+        Assertions.assertFalse(true, "Exception thrown: " + ex.getMessage());
       }
     });
-    
+
     latch.await();
-    assertTrue(done.get());
+    Assertions.assertTrue(done.get());
   }
 
   /**
    * Test of selectTab method, of class FXHelper.
+   *
    * @throws java.lang.InterruptedException If interrupted
    */
   @Test
@@ -334,59 +345,61 @@ public class FXHelperTest {
     final Tab tab2 = new Tab("2nd Tab");
     tab2.setId(tabID2);
     final TabPane tabPane = new TabPane(tab1, tab2);
-    
+
     final CountDownLatch latch = new CountDownLatch(1);
-    
+
     Platform.runLater(() -> {
       Scene scene = new Scene(tabPane);
       stage.setScene(scene);
       latch.countDown();
     });
-    
+
     latch.await();
     assertEquals(true, tab1.isSelected());
     assertEquals(false, tab2.isSelected());
-    
+
     FXHelper.selectTab(tabPane, tabID1);
     assertEquals(true, tab1.isSelected());
     assertEquals(false, tab2.isSelected());
-    
+
     FXHelper.selectTab(tabPane, tabID2);
     assertEquals(false, tab1.isSelected());
     assertEquals(true, tab2.isSelected());
   }
-  
-  @Test(expected = NullPointerException.class)
+
+  @Test
   public void testSelectTab_nonexisting_id() throws InterruptedException {
     System.out.println("selectTab");
-    System.out.println("findTab");
-    final String tabID1 = "tab1";
-    final String tabID2 = "tab2";
-    final Tab tab1 = new Tab("1st Tab");
-    tab1.setId(tabID1);
-    final Tab tab2 = new Tab("2nd Tab");
-    tab2.setId(tabID2);
-    final TabPane tabPane = new TabPane(tab1, tab2);
-    
-    final CountDownLatch latch = new CountDownLatch(1);
-    
-    Platform.runLater(() -> {
-      Scene scene = new Scene(tabPane);
-      stage.setScene(scene);
-      latch.countDown();
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      System.out.println("findTab");
+      final String tabID1 = "tab1";
+      final String tabID2 = "tab2";
+      final Tab tab1 = new Tab("1st Tab");
+      tab1.setId(tabID1);
+      final Tab tab2 = new Tab("2nd Tab");
+      tab2.setId(tabID2);
+      final TabPane tabPane = new TabPane(tab1, tab2);
+
+      final CountDownLatch latch = new CountDownLatch(1);
+
+      Platform.runLater(() -> {
+        Scene scene = new Scene(tabPane);
+        stage.setScene(scene);
+        latch.countDown();
+      });
+
+      latch.await();
+      assertEquals(true, tab1.isSelected());
+      assertEquals(false, tab2.isSelected());
+
+      FXHelper.selectTab(tabPane, tabID2);
+      assertEquals(false, tab1.isSelected());
+      assertEquals(true, tab2.isSelected());
+
+      FXHelper.selectTab(tabPane, "bla");
+      assertEquals(false, tab1.isSelected());
+      assertEquals(true, tab2.isSelected());
     });
-    
-    latch.await();
-    assertEquals(true, tab1.isSelected());
-    assertEquals(false, tab2.isSelected());
-    
-    FXHelper.selectTab(tabPane, tabID2);
-    assertEquals(false, tab1.isSelected());
-    assertEquals(true, tab2.isSelected());
-    
-    FXHelper.selectTab(tabPane, "bla");
-    assertEquals(false, tab1.isSelected());
-    assertEquals(true, tab2.isSelected());
   }
 
   /**
@@ -398,9 +411,9 @@ public class FXHelperTest {
     Stage testStage = null;
     FXHelper.shutdownStage(testStage);
 
-    assertTrue("Null input gets ignored.", true);
+    Assertions.assertTrue(true, "Null input gets ignored.");
   }
-  
+
   @Test
   public void testShutdownStage() throws Exception {
     System.out.println("shutdownStage");
@@ -414,7 +427,7 @@ public class FXHelperTest {
     FXHelper.shutdownStage(stage);
 
     Thread.sleep(500);
-    assertFalse(stage.isShowing());
+    Assertions.assertFalse(stage.isShowing());
     assertNull(stage.getScene());
   }
 
@@ -429,16 +442,16 @@ public class FXHelperTest {
     TextField target = new TextField();
 
     final CountDownLatch latch = new CountDownLatch(1);
-    
+
     Platform.runLater(() -> {
       Scene scene = new Scene(new VBox(target));
       stage.setScene(scene);
       latch.countDown();
     });
-    
+
     latch.await();
     assertEquals("", target.getText());
-    
+
     String t = "input";
     FXHelper.typeKey(target, t);
     assertEquals(t, target.getText());
@@ -456,7 +469,7 @@ public class FXHelperTest {
     TextField target = new TextField();
 
     final CountDownLatch latch = new CountDownLatch(1);
-    
+
     Platform.runLater(() -> {
       Scene scene = new Scene(new VBox(target));
       stage.setScene(scene);
@@ -465,33 +478,35 @@ public class FXHelperTest {
 
     latch.await();
     assertEquals("", target.getText());
-    
+
     Character c = 'O';
     FXHelper.typeKey(target, c);
     assertEquals(String.valueOf(c), target.getText());
   }
-  
-  @Test(expected = FXUnitException.class)
+
+  @Test
   public void testTypeKey_Node_KeyCode_Null() throws InterruptedException {
     System.out.println("typeKey keycode null");
+    Assertions.assertThrows(FXUnitException.class, () -> {
 
-    TextField target = new TextField();
+      TextField target = new TextField();
 
-    final CountDownLatch latch = new CountDownLatch(1);
-    
-    Platform.runLater(() -> {
-      Scene scene = new Scene(new VBox(target));
-      stage.setScene(scene);
-      latch.countDown();
+      final CountDownLatch latch = new CountDownLatch(1);
+
+      Platform.runLater(() -> {
+        Scene scene = new Scene(new VBox(target));
+        stage.setScene(scene);
+        latch.countDown();
+      });
+
+      latch.await();
+      assertEquals("", target.getText());
+
+      String t = "O";
+      KeyCode nullCode = null;
+      FXHelper.typeKey(target, nullCode);
+      assertEquals(t, target.getText());
     });
-
-    latch.await();
-    assertEquals("", target.getText());
-    
-    String t = "O";
-    KeyCode nullCode = null;
-    FXHelper.typeKey(target, nullCode);
-    assertEquals(t, target.getText());
   }
 
   @Test
@@ -501,7 +516,7 @@ public class FXHelperTest {
     TextField target = new TextField();
 
     final CountDownLatch latch = new CountDownLatch(1);
-    
+
     Platform.runLater(() -> {
       Scene scene = new Scene(new VBox(target));
       stage.setScene(scene);
@@ -510,12 +525,12 @@ public class FXHelperTest {
 
     latch.await();
     assertEquals("", target.getText());
-    
+
     String t = "O";
     FXHelper.typeKey(target, KeyCode.O);
     assertEquals(t, target.getText());
   }
-  
+
   @Test
   public void testTypeKey_Node_KeyCode_NonChar() throws InterruptedException {
     System.out.println("typeKey keycode nonchar");
@@ -529,7 +544,7 @@ public class FXHelperTest {
     });
 
     final CountDownLatch latch = new CountDownLatch(1);
-    
+
     Platform.runLater(() -> {
       Scene scene = new Scene(new VBox(target));
       stage.setScene(scene);
@@ -539,10 +554,10 @@ public class FXHelperTest {
     latch.await();
     final String emptyString = "";
     assertEquals(emptyString, target.getText());
-    
+
     FXHelper.typeKey(target, KeyCode.ENTER);
     assertEquals(emptyString, target.getText());
-    assertTrue(enterTyped.get());
+    Assertions.assertTrue(enterTyped.get());
   }
 
 }

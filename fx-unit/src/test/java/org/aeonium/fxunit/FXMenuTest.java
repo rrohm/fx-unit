@@ -25,11 +25,13 @@ import javafx.application.Platform;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.aeonium.fxunit.DriverApp.FXUnitApp;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for {@link FXMenu}.
@@ -44,7 +46,7 @@ public class FXMenuTest {
     // no op
   }
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpClass() {
     Thread t = new Thread("JavaFX Init Thread") {
       @Override
@@ -68,7 +70,7 @@ public class FXMenuTest {
     }
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDownClass() {
     try {
       Thread.sleep(1000);
@@ -78,7 +80,7 @@ public class FXMenuTest {
     }
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
     Platform.runLater(() -> {
       stage = new Stage();
@@ -86,7 +88,7 @@ public class FXMenuTest {
     });
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     Platform.runLater(() -> {
       if (stage != null) {
@@ -98,20 +100,24 @@ public class FXMenuTest {
   /**
    * Test of getMenuItem method, of class FXMenu.
    */
-  @Test(expected = AssertionError.class)
+  @Test
   public void testGetMenuItem_nullMenu_throws() {
     System.out.println("getMenuItem");
-    String id = "#doNotKnow";
-    FXMenu instance = new FXMenu(null);
-    instance.getMenuItem(id);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      String id = "#doNotKnow";
+      FXMenu instance = new FXMenu(null);
+      instance.getMenuItem(id);
+    });
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
   public void testGetMenuItem_itemNotFound_throws() {
     System.out.println("getMenuItem");
-    String id = "#doNotKnow";
-    FXMenu instance = new FXMenu(new Menu().getItems());
-    instance.getMenuItem(id);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      String id = "#doNotKnow";
+      FXMenu instance = new FXMenu(new Menu().getItems());
+      instance.getMenuItem(id);
+    });
   }
 
   @Test
@@ -137,20 +143,24 @@ public class FXMenuTest {
   /**
    * Test of hasMenuItem method, of class FXMenu.
    */
-  @Test(expected = AssertionError.class)
+  @Test
   public void testHasMenuItem_nullMenu_throws() {
     System.out.println("hasMenuItem");
-    String id = "#doNotKnow";
-    FXMenu instance = new FXMenu(null);
-    instance.hasMenuItem(id);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      String id = "#doNotKnow";
+      FXMenu instance = new FXMenu(null);
+      instance.hasMenuItem(id);
+    });
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
   public void testHasMenuItem_itemNotFound_throws() {
     System.out.println("hasMenuItem");
-    String id = "#doNotKnow";
-    FXMenu instance = new FXMenu(new Menu().getItems());
-    instance.hasMenuItem(id);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      String id = "#doNotKnow";
+      FXMenu instance = new FXMenu(new Menu().getItems());
+      instance.hasMenuItem(id);
+    });
   }
 
   @Test

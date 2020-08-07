@@ -21,18 +21,56 @@ package org.aeonium.fxunit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
+import static javafx.application.Application.launch;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
- * This application is used to initialize the JavaFX framework. 
+ * This application is used to initialize the JavaFX framework.
  *
  * @author Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;
  */
 public class DriverApp extends Application {
 
+  public static class FXUnitApp extends Application {
+
+    @Override
+    public void start(Stage stage) throws Exception {
+
+      VBox box = new VBox(10.0, new Label("aeFXUnit Test running ..."), new ProgressIndicator(-1));
+      box.setPadding(new Insets(10.0));
+      box.setAlignment(Pos.CENTER);
+      box.setBackground(new Background(new BackgroundFill(Color.rgb(255, 255, 255), CornerRadii.EMPTY, Insets.EMPTY)));
+
+      Scene scene = new Scene(box);
+      stage.setTitle("JavaFX UnitTest dummy.");
+      stage.setScene(scene);
+      stage.initStyle(StageStyle.UNDECORATED);
+      stage.show();
+    }
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+      launch(args);
+    }
+
+  }
+
   private static final Logger LOG = Logger.getLogger(DriverApp.class.getName());
 
-  private static Application app;
+  static Application app;
 
   public static void setApplication(Application fxApp) {
     LOG.log(Level.INFO, "setApplication: {0}", fxApp);

@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2020 Aeonium Software Systems.
  *
@@ -21,36 +22,37 @@ package org.aeonium.fxunit;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author robert
  */
 public class FXUnitTestBaseTest {
-  
+
   public FXUnitTestBaseTest() {
   }
-  
-  @BeforeClass
+
+  @BeforeAll
   public static void setUpClass() {
   }
-  
-  @AfterClass
+
+  @AfterAll
   public static void tearDownClass() {
   }
-  
-  @Before
+
+  @BeforeEach
   public void setUp() {
   }
-  
-  @After
+
+  @AfterEach
   public void tearDown() {
   }
 
@@ -100,15 +102,18 @@ public class FXUnitTestBaseTest {
   /**
    * Test of show method, of class FXUnitTestBase.
    */
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testShow() {
     System.out.println("show");
-    Node node = null;
-    FXUnitTestBase instance = new FXUnitTestBaseImpl();
-    instance.show(node);
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      Node node = null;
+      FXUnitTestBase instance = new FXUnitTestBaseImpl();
+      instance.show(node);
+    });
   }
 
   public class FXUnitTestBaseImpl extends FXUnitTestBase {
+    // no op
   }
-  
+
 }

@@ -22,15 +22,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.aeonium.fxunit.DriverApp.FXUnitApp;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for {@link FXMenuItem}.
@@ -45,7 +46,7 @@ public class FXMenuItemTest {
     // no op
   }
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpClass() {
     Thread t = new Thread("JavaFX Init Thread") {
       @Override
@@ -69,7 +70,7 @@ public class FXMenuItemTest {
     }
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDownClass() {
     try {
       Thread.sleep(1000);
@@ -79,7 +80,7 @@ public class FXMenuItemTest {
     }
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
     Platform.runLater(() -> {
       stage = new Stage();
@@ -87,7 +88,7 @@ public class FXMenuItemTest {
     });
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     Platform.runLater(() -> {
       if (stage != null) {
@@ -99,20 +100,24 @@ public class FXMenuItemTest {
   /**
    * Test of isDisabled method, of class FXMenuItem.
    */
-  @Test(expected = AssertionError.class)
+  @Test
   public void testIsDisabled_null_throws() {
     System.out.println("isDisabled");
-    FXMenuItem instance = new FXMenuItem(null);
-    FXMenuItem result = instance.isDisabled();
-    assertSame(instance, result);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      FXMenuItem instance = new FXMenuItem(null);
+      FXMenuItem result = instance.isDisabled();
+      assertSame(instance, result);
+    });
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
   public void testIsDisabled_enabled_throws() {
     System.out.println("isDisabled");
-    FXMenuItem instance = new FXMenuItem(new MenuItem());
-    FXMenuItem result = instance.isDisabled();
-    assertSame(instance, result);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      FXMenuItem instance = new FXMenuItem(new MenuItem());
+      FXMenuItem result = instance.isDisabled();
+      assertSame(instance, result);
+    });
   }
 
   @Test
@@ -128,22 +133,26 @@ public class FXMenuItemTest {
   /**
    * Test of isEnabled method, of class FXMenuItem.
    */
-  @Test(expected = AssertionError.class)
+  @Test
   public void testIsEnabled_null_throws() {
     System.out.println("isEnabled");
-    FXMenuItem instance = new FXMenuItem(null);
-    FXMenuItem result = instance.isEnabled();
-    assertSame(instance, result);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      FXMenuItem instance = new FXMenuItem(null);
+      FXMenuItem result = instance.isEnabled();
+      assertSame(instance, result);
+    });
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
   public void testIsEnabled_disabled_throws() {
     System.out.println("isEnabled");
-    final MenuItem menuItem = new MenuItem();
-    menuItem.setDisable(true);
-    FXMenuItem instance = new FXMenuItem(menuItem);
-    FXMenuItem result = instance.isEnabled();
-    assertSame(instance, result);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      final MenuItem menuItem = new MenuItem();
+      menuItem.setDisable(true);
+      FXMenuItem instance = new FXMenuItem(menuItem);
+      FXMenuItem result = instance.isEnabled();
+      assertSame(instance, result);
+    });
   }
 
   @Test
@@ -159,22 +168,26 @@ public class FXMenuItemTest {
   /**
    * Test of isVisible method, of class FXMenuItem.
    */
-  @Test(expected = AssertionError.class)
+  @Test
   public void testIsVisible_null_throws() {
     System.out.println("isVisible");
-    FXMenuItem instance = new FXMenuItem(null);
-    FXMenuItem result = instance.isVisible();
-    assertSame(instance, result);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      FXMenuItem instance = new FXMenuItem(null);
+      FXMenuItem result = instance.isVisible();
+      assertSame(instance, result);
+    });
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
   public void testIsVisible_visible_throws() {
     System.out.println("isVisible");
-    final MenuItem menuItem = new MenuItem();
-    menuItem.setVisible(false);
-    FXMenuItem instance = new FXMenuItem(menuItem);
-    FXMenuItem result = instance.isVisible();
-    assertSame(instance, result);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      final MenuItem menuItem = new MenuItem();
+      menuItem.setVisible(false);
+      FXMenuItem instance = new FXMenuItem(menuItem);
+      FXMenuItem result = instance.isVisible();
+      assertSame(instance, result);
+    });
   }
 
   @Test
@@ -188,20 +201,24 @@ public class FXMenuItemTest {
   /**
    * Test of isNotVisible method, of class FXMenuItem.
    */
-  @Test(expected = AssertionError.class)
+  @Test
   public void testIsNotVisible_null_throws() {
     System.out.println("isNotVisible");
-    FXMenuItem instance = new FXMenuItem(null);;
-    FXMenuItem result = instance.isNotVisible();
-    assertSame(instance, result);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      FXMenuItem instance = new FXMenuItem(null);;
+      FXMenuItem result = instance.isNotVisible();
+      assertSame(instance, result);
+    });
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
   public void testIsNotVisible_visible_throws() {
     System.out.println("isNotVisible");
-    FXMenuItem instance = new FXMenuItem(new MenuItem());
-    FXMenuItem result = instance.isNotVisible();
-    assertSame(instance, result);
+    Assertions.assertThrows(AssertionError.class, () -> {
+      FXMenuItem instance = new FXMenuItem(new MenuItem());
+      FXMenuItem result = instance.isNotVisible();
+      assertSame(instance, result);
+    });
   }
 
   @Test

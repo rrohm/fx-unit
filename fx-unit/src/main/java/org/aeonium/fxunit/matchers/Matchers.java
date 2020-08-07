@@ -19,7 +19,6 @@
 package org.aeonium.fxunit.matchers;
 
 import javafx.scene.Node;
-import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
 
 /**
@@ -39,7 +38,6 @@ public abstract class Matchers {
    *
    * @return Whether the node is visible.
    */
-  @Factory
   public static Matcher<Node> isVisible() {
     return new IsVisibleMatcher();
   }
@@ -50,7 +48,6 @@ public abstract class Matchers {
    *
    * @return Whether the node is invisible.
    */
-  @Factory
   public static Matcher<Node> isNotVisible() {
     return new IsNotVisibleMatcher();
   }
