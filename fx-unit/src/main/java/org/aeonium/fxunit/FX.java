@@ -343,14 +343,22 @@ public class FX {
 
   /**
    * Execute the fire() method on the selected node, i.e., simulate a mouse
-   * click with the JavaFX API.
+   * click with the JavaFX API. This method takes care of firing the button on 
+   * the FX application thread.
    *
    * @return The FX instance, for call chaining ("fluent API").
    */
   public FX fire() {
     if (node instanceof ButtonBase) {
       ButtonBase button = (ButtonBase) node;
-      button.fire();
+      try {
+        FXHelper.runAndWait(() -> {
+          button.fire();
+        });
+      } catch (ExecutionException ex) {
+        Logger.getLogger(FX.class.getName()).log(Level.SEVERE, null, ex);
+        throw new RuntimeException(ex);
+      }
     } else {
       throw new UnsupportedOperationException("Type " + this.node.getClass().getName() + " is not supported. Currently, fire() supports ButtonBase and descendants only.");
     }
@@ -539,17 +547,17 @@ public class FX {
   }
 
   /**
-   * Convenience method for sleeping/waiting a number of milliseconds – if not
+   * Convenience method for delaying for a number of milliseconds – if not
    * running on the JavaFX Application Thread. In this case, the method will not
    * wait, in order to not slow down the UI. Hence, use this method if you think
    * it is necessary to allow UI rendering to catch up with state changes like
    * selection, highlighting etc.
    *
-   * @param millis Milliseconds to wait, if not running on the JavaFX
-   * Application Thread.
+   * @param millis Milliseconds to delay, if not running on the JavaFX
+ Application Thread.
    * @return The FX instance, for call chaining ("fluent API").
    */
-  public FX wait(int millis) {
+  public FX delay(int millis) {
     if (!Platform.isFxApplicationThread()) {
       try {
         Thread.sleep(millis);
@@ -557,8 +565,9 @@ public class FX {
         Logger.getLogger(FX.class.getName()).log(Level.SEVERE, null, ex);
         Thread.currentThread().interrupt();
       }
+    } else {
+      LOG.warning("Delaying on the FX application thread? Seriously?");
     }
     return this;
   }
-
 }
