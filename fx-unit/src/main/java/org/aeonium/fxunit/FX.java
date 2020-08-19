@@ -26,6 +26,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.ButtonBase;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Control;
 import javafx.scene.control.Labeled;
@@ -42,7 +43,7 @@ import javafx.stage.Stage;
  * @author Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;
  */
 public class FX {
-  
+
   private static final String NO_NODE_FOUND_FOR_ID_ = "No node found for ID ";
   private static final String VALUE_OF_ = "Value of ";
 
@@ -99,7 +100,7 @@ public class FX {
    *
    * @param count The required child node count.
    * @return The FX instance, for call chaining ("fluent API").
-   * @see AssertFX#assertHasChildren(javafx.scene.Parent, int) 
+   * @see AssertFX#assertHasChildren(javafx.scene.Parent, int)
    */
   public FX hasChildren(int count) {
     if (this.node instanceof Parent) {
@@ -117,13 +118,39 @@ public class FX {
   }
 
   /**
+   * Assert that the selected node does not have the given CSS style class
+   * assigned.
+   *
+   * @param styleClass
+   * @return The FX instance, for call chaining ("fluent API").
+   * @see AssertFX#assertHasNotStyleClass(javafx.scene.Node, java.lang.String)
+   */
+  public FX hasNotStyleClass(String styleClass) {
+    AssertFX.assertHasNotStyleClass(this.node, styleClass);
+    return this;
+  }
+
+  /**
+   * Assert that the selected node has the given CSS style class assigned.
+   *
+   * @param styleClass
+   * @return The FX instance, for call chaining ("fluent API").
+   * @see AssertFX#assertHasStyleClass(javafx.scene.Node, java.lang.String)
+   */
+  public FX hasStyleClass(String styleClass) {
+    AssertFX.assertHasStyleClass(this.node, styleClass);
+    return this;
+  }
+
+  /**
    * Assert that the selected node is an instance of Labeled or an instance of
    * TextInputControl and has a given value in it's text property.
    *
    * @param text The text content to be tested for.
    * @return The FX instance, for call chaining ("fluent API").
-   * @see AssertFX#assertText(javafx.scene.control.TextInputControl, java.lang.String) 
-   * @see AssertFX#assertText(javafx.scene.control.Labeled, java.lang.String) 
+   * @see AssertFX#assertText(javafx.scene.control.TextInputControl,
+   * java.lang.String)
+   * @see AssertFX#assertText(javafx.scene.control.Labeled, java.lang.String)
    */
   public FX hasText(String text) {
     if (this.node instanceof Labeled) {
@@ -143,7 +170,8 @@ public class FX {
    *
    * @param text The tooltip text
    * @return The FX instance, for call chaining ("fluent API").
-   * @see AssertFX#assertTooltipText(javafx.scene.control.Control, java.lang.String) 
+   * @see AssertFX#assertTooltipText(javafx.scene.control.Control,
+   * java.lang.String)
    */
   public FX hasTooltipText(String text) {
     if (this.node instanceof Control) {
@@ -158,7 +186,7 @@ public class FX {
   /**
    * Assert that the selected node is disabled.
    *
-   * @see AssertFX#assertDisabled(javafx.scene.Node) 
+   * @see AssertFX#assertDisabled(javafx.scene.Node)
    * @return The FX instance, for call chaining ("fluent API").
    */
   public FX isDisabled() {
@@ -169,7 +197,7 @@ public class FX {
   /**
    * Assert that the selected node is enabled.
    *
-   * @see AssertFX#assertEnabled(javafx.scene.Node) 
+   * @see AssertFX#assertEnabled(javafx.scene.Node)
    * @return The FX instance, for call chaining ("fluent API").
    */
   public FX isEnabled() {
@@ -180,14 +208,15 @@ public class FX {
   /**
    * Assert that the given node is editable, i.e., it is a descendant of
    * TextInputControl and it's "editable" property is true;
-   * 
-   * @see AssertFX#assertEditable(javafx.scene.Node) 
+   *
+   * @see AssertFX#assertEditable(javafx.scene.Node)
    * @return The FX instance, for call chaining ("fluent API").
    */
   public FX isEditable() {
     AssertFX.assertEditable(this.node);
     return this;
   }
+
   /**
    * Assert that the selected node has no child nodes.
    *
@@ -208,7 +237,7 @@ public class FX {
    * Assert that the selected node is focused.
    *
    * @return The FX instance, for call chaining ("fluent API").
-   * @see AssertFX#assertFocused(javafx.scene.Node) 
+   * @see AssertFX#assertFocused(javafx.scene.Node)
    */
   public FX isFocused() {
     AssertFX.assertFocused(this.node);
@@ -239,7 +268,7 @@ public class FX {
    * Assert that the selected node is <i>not</i> in managed state.
    *
    * @return The FX instance, for call chaining ("fluent API").
-   * @see AssertFX#assertNotManaged(javafx.scene.Node) 
+   * @see AssertFX#assertNotManaged(javafx.scene.Node)
    */
   public FX isNotManaged() {
     AssertFX.assertNotManaged(node);
@@ -251,7 +280,7 @@ public class FX {
    * <i>not</i> selected.
    *
    * @return The FX instance, for call chaining ("fluent API").
-   * @see AssertFX#assertNotSelected(javafx.scene.control.ToggleButton) 
+   * @see AssertFX#assertNotSelected(javafx.scene.control.ToggleButton)
    */
   public FX isNotSelected() {
     if (this.node instanceof ToggleButton) {
@@ -267,7 +296,7 @@ public class FX {
    * Assert that the selected node is <i>not</i> visible.
    *
    * @return The FX instance, for call chaining ("fluent API").
-   * @see AssertFX#assertNotVisible(javafx.scene.Node) 
+   * @see AssertFX#assertNotVisible(javafx.scene.Node)
    */
   public FX isNotVisible() {
     AssertFX.assertNotVisible(node);
@@ -297,7 +326,7 @@ public class FX {
    * selected.
    *
    * @return The FX instance, for call chaining ("fluent API").
-   * @see AssertFX#assertSelected(javafx.scene.control.ToggleButton) 
+   * @see AssertFX#assertSelected(javafx.scene.control.ToggleButton)
    */
   public FX isSelected() {
     if (this.node instanceof ToggleButton) {
@@ -313,7 +342,7 @@ public class FX {
    * Assert that the selected node is in managed state.
    *
    * @return The FX instance, for call chaining ("fluent API").
-   * @see AssertFX#assertManaged(javafx.scene.Node) 
+   * @see AssertFX#assertManaged(javafx.scene.Node)
    */
   public FX isManaged() {
     AssertFX.assertManaged(node);
@@ -324,7 +353,7 @@ public class FX {
    * Assert that the selected node is visible.
    *
    * @return The FX instance, for call chaining ("fluent API").
-   * @see AssertFX#assertVisible(javafx.scene.Node) 
+   * @see AssertFX#assertVisible(javafx.scene.Node)
    */
   public FX isVisible() {
     AssertFX.assertVisible(node);
@@ -343,7 +372,7 @@ public class FX {
 
   /**
    * Execute the fire() method on the selected node, i.e., simulate a mouse
-   * click with the JavaFX API. This method takes care of firing the button on 
+   * click with the JavaFX API. This method takes care of firing the button on
    * the FX application thread.
    *
    * @return The FX instance, for call chaining ("fluent API").
@@ -366,9 +395,28 @@ public class FX {
   }
 
   /**
+   * Try to set the focus on the selected node and assure it has the focus.
+   *
+   * @return The FX instance, for call chaining ("fluent API").
+   */
+  public FX focus() {
+    try {
+      FXHelper.runAndWait(() -> {
+        this.node.requestFocus();
+      });
+    } catch (ExecutionException ex) {
+      Logger.getLogger(FX.class.getName()).log(Level.SEVERE, null, ex);
+      throw new RuntimeException(ex);
+    }
+    AssertFX.assertFocused(this.node);
+    return this;
+  }
+
+  /**
    * Assert that the selected node has a context menu and show it.
    *
-   * @return
+   * @return An {@link FXMenu} wrapper for fluent testing on the context menu as
+   * SUT.
    */
   public FXMenu getContextMenu() {
     if (this.node instanceof Control) {
@@ -411,6 +459,44 @@ public class FX {
       throw new NullPointerException("This method should not return null. Please use the constructor FX(Node node) only.");
     }
     return (T) this.node;
+  }
+
+  public FX hasItems() {
+    if (this.node instanceof ChoiceBox) {
+      ChoiceBox choiceBox = (ChoiceBox) this.node;
+      AssertFX.assertHasItems(choiceBox);
+    } else if (this.node instanceof ComboBox) {
+      ComboBox comboBox = (ComboBox) this.node;
+      AssertFX.assertHasItems(comboBox);
+    } else if (this.node instanceof ListView) {
+      ListView listView = (ListView) this.node;
+      AssertFX.assertHasItems(listView);
+    } else if (this.node instanceof TableView) {
+      TableView tableView = (TableView) this.node;
+      AssertFX.assertHasItems(tableView);
+    } else {
+      throw new UnsupportedOperationException("Type " + this.node.getClass().getName() + " is not supported. Currently, hasItems() supports ChoiceBox, ComboBox, ListView and TableView only.");
+    }
+    return this;
+  }
+
+  public FX hasItems(int count) {
+    if (this.node instanceof ChoiceBox) {
+      ChoiceBox choiceBox = (ChoiceBox) this.node;
+      AssertFX.assertHasItems(choiceBox, count);
+    } else if (this.node instanceof ComboBox) {
+      ComboBox comboBox = (ComboBox) this.node;
+      AssertFX.assertHasItems(comboBox, count);
+    } else if (this.node instanceof ListView) {
+      ListView listView = (ListView) this.node;
+      AssertFX.assertHasItems(listView, count);
+    } else if (this.node instanceof TableView) {
+      TableView tableView = (TableView) this.node;
+      AssertFX.assertHasItems(tableView, count);
+    } else {
+      throw new UnsupportedOperationException("Type " + this.node.getClass().getName() + " is not supported. Currently, hasItems() supports ChoiceBox, ComboBox, ListView and TableView only.");
+    }
+    return this;
   }
 
   public FX hasMenuItem(String id) {
@@ -527,6 +613,27 @@ public class FX {
 //    }
 //    return this;
 //  }
+  /**
+   * Set the given text to the selected Labeld or TextInputControl and assert
+   * that it has been set successfully.
+   *
+   * @param string The text to set and assert.
+   * @return The FX instance, for call chaining ("fluent API").
+   */
+  public FX setText(String string) {
+    if (this.node instanceof TextInputControl) {
+      TextInputControl textInputControl = (TextInputControl) this.node;
+      textInputControl.setText(string);
+      AssertFX.assertText(textInputControl, string);
+    } else if (this.node instanceof Labeled) {
+      Labeled labeled = (Labeled) this.node;
+      AssertFX.assertText(labeled, string);
+    } else {
+      throw new UnsupportedOperationException("Type " + this.node.getClass().getName() + " is not supported. Currently, setText() supports Labeled and TextInputControl only.");
+    }
+    return this;
+  }
+
   public <T> FX setValue(T value) {
     if (this.node instanceof ChoiceBox) {
       ChoiceBox<T> choiceBox = (ChoiceBox<T>) this.node;
@@ -554,7 +661,7 @@ public class FX {
    * selection, highlighting etc.
    *
    * @param millis Milliseconds to delay, if not running on the JavaFX
- Application Thread.
+   * Application Thread.
    * @return The FX instance, for call chaining ("fluent API").
    */
   public FX delay(int millis) {
