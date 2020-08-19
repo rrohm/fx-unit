@@ -18,21 +18,54 @@
  */
 package org.aeonium.fxunit;
 
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.scene.control.MenuItem;
 
 /**
  * Utility for testing MenuItems with a fluent API.
+ *
  * @author robert rohm
  */
 public class FXMenuItem {
-  
+
+  private static final Logger LOG = Logger.getLogger(FXMenuItem.class.getName());
+
   private final MenuItem item;
 
   public FXMenuItem(MenuItem item) {
     this.item = item;
   }
   
-  public FXMenuItem isDisabled(){
+  
+  /**
+   * Convenience method for delaying for a number of milliseconds – if not
+   * running on the JavaFX Application Thread. In this case, the method will not
+   * wait, in order to not slow down the UI. Hence, use this method if you think
+   * it is necessary to allow UI rendering to catch up with state changes like
+   * selection, highlighting etc.
+   *
+   * @param millis Milliseconds to delay, if not running on the JavaFX
+ Application Thread.
+   * @return The FX instance, for call chaining ("fluent API").
+   */
+  public FXMenuItem delay(int millis) {
+    if (!Platform.isFxApplicationThread()) {
+      try {
+        Thread.sleep(millis);
+      } catch (InterruptedException ex) {
+        Logger.getLogger(FX.class.getName()).log(Level.SEVERE, null, ex);
+        Thread.currentThread().interrupt();
+      }
+    } else {
+      LOG.warning("Delaying on the FX application thread? Seriously?");
+    }
+    return this;
+  }
+
+  public FXMenuItem isDisabled() {
     if (this.item == null) {
       throw new AssertionError("MenuItem is null.");
     }
@@ -41,8 +74,8 @@ public class FXMenuItem {
     }
     return this;
   }
-  
-  public FXMenuItem isEnabled(){
+
+  public FXMenuItem isEnabled() {
     if (this.item == null) {
       throw new AssertionError("MenuItem is null.");
     }
@@ -51,8 +84,8 @@ public class FXMenuItem {
     }
     return this;
   }
-  
-  public FXMenuItem isVisible(){
+
+  public FXMenuItem isVisible() {
     if (this.item == null) {
       throw new AssertionError("MenuItem is null.");
     }
@@ -61,13 +94,25 @@ public class FXMenuItem {
     }
     return this;
   }
-  
-  public FXMenuItem isNotVisible(){
+
+  public FXMenuItem isNotVisible() {
     if (this.item == null) {
       throw new AssertionError("MenuItem is null.");
     }
     if (this.item.isVisible()) {
       throw new AssertionError("MenuItem " + this.item + " should not be visible, but is.");
+    }
+    return this;
+  }
+
+  public FXMenuItem fire() {
+    try {
+      FXHelper.runAndWait(() -> {
+        this.item.fire();
+      });
+    } catch (ExecutionException ex) {
+      Logger.getLogger(FX.class.getName()).log(Level.SEVERE, null, ex);
+      throw new RuntimeException(ex);
     }
     return this;
   }
