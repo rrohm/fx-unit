@@ -20,12 +20,17 @@ package org.aeonium.fxunit;
 
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.Labeled;
+import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.TreeTableView;
 import javafx.stage.Window;
 import org.aeonium.fxunit.i18n.I18N;
 import static org.aeonium.fxunit.i18n.I18N.*;
@@ -135,6 +140,217 @@ public class AssertFX {
 
     if (size != children) {
       throw new AssertionError(parent + " should have " + children + " children, but actually has " + size);
+    }
+  }
+
+  /**
+   * Assert that the given ChoiceBox control has a given number of data items.
+   *
+   * @param choiceBox The control
+   * @param itemCount The item count, must not be negative
+   */
+  public static void assertHasItems(ChoiceBox choiceBox, int itemCount) {
+    if (choiceBox == null) {
+      throw new AssertionError(I18N.getString(NODE_IS_NULL));
+    }
+    if (itemCount < 0) {
+      throw new IllegalArgumentException("Item count cannot be less than 0");
+    }
+    if (choiceBox.getItems() == null) {
+      throw new AssertionError(choiceBox + " should have " + itemCount + " items, but .getItems() is null");
+    }
+    final int size = choiceBox.getItems().size();
+
+    if (size != itemCount) {
+      throw new AssertionError(choiceBox + " should have " + itemCount + " items, but actually has " + size);
+    }
+  }
+
+  /**
+   * Assert that the given ComboBox control has a given number of data items.
+   *
+   * @param comboBox The control
+   * @param itemCount The item count, must not be negative
+   */
+  public static void assertHasItems(ComboBox comboBox, int itemCount) {
+    if (comboBox == null) {
+      throw new AssertionError(I18N.getString(NODE_IS_NULL));
+    }
+    if (itemCount < 0) {
+      throw new IllegalArgumentException("Item count cannot be less than 0");
+    }
+    if (comboBox.getItems() == null) {
+      throw new AssertionError(comboBox + " should have " + itemCount + " items, but .getItems() is null");
+    }
+    final int size = comboBox.getItems().size();
+
+    if (size != itemCount) {
+      throw new AssertionError(comboBox + " should have " + itemCount + " items, but actually has " + size);
+    }
+  }
+
+  /**
+   * Assert that the given ListView control has a given number of data items.
+   *
+   * @param listView The control
+   * @param itemCount The item count, must not be negative
+   */
+  public static void assertHasItems(ListView listView, int itemCount) {
+    if (listView == null) {
+      throw new AssertionError(I18N.getString(NODE_IS_NULL));
+    }
+    if (itemCount < 0) {
+      throw new IllegalArgumentException("Item count cannot be less than 0");
+    }
+    if (listView.getItems() == null) {
+      throw new AssertionError(listView + " should have " + itemCount + " items, but .getItems() is null");
+    }
+    final int size = listView.getItems().size();
+
+    if (size != itemCount) {
+      throw new AssertionError(listView + " should have " + itemCount + " items, but actually has " + size);
+    }
+  }
+
+  /**
+   * Assert that the given TableView control has a given number of data items.
+   *
+   * @param tableView The control
+   * @param itemCount The item count, must not be negative
+   */
+  public static void assertHasItems(TableView tableView, int itemCount) {
+    if (tableView == null) {
+      throw new AssertionError(I18N.getString(NODE_IS_NULL));
+    }
+    if (itemCount < 0) {
+      throw new IllegalArgumentException("Item count cannot be less than 0");
+    }
+    if (tableView.getItems() == null) {
+      throw new AssertionError(tableView + " should have " + itemCount + " items, but .getItems() is null");
+    }
+    final int size = tableView.getItems().size();
+
+    if (size != itemCount) {
+      throw new AssertionError(tableView + " should have " + itemCount + " items, but actually has " + size);
+    }
+  }
+
+  /**
+   * Assert that the given ChoiceBox control has any data items.
+   *
+   * @param choiceBox The control
+   */
+  public static void assertHasItems(ChoiceBox choiceBox) {
+    if (choiceBox == null) {
+      throw new AssertionError(I18N.getString(NODE_IS_NULL));
+    }
+    if (choiceBox.getItems() == null) {
+      throw new AssertionError(choiceBox + " should have items, but .getItems() is null");
+    }
+    final int size = choiceBox.getItems().size();
+
+    if (size < 1) {
+      throw new AssertionError(choiceBox + " should have items, but actually has " + size);
+    }
+  }
+
+  /**
+   * Assert that the given ComboBox control has any data items.
+   *
+   * @param comboBox The control
+   */
+  public static void assertHasItems(ComboBox comboBox) {
+    if (comboBox == null) {
+      throw new AssertionError(I18N.getString(NODE_IS_NULL));
+    }
+    if (comboBox.getItems() == null) {
+      throw new AssertionError(comboBox + " should have items, but .getItems() is null");
+    }
+    final int size = comboBox.getItems().size();
+
+    if (size < 1) {
+      throw new AssertionError(comboBox + " should have items, but actually has " + size);
+    }
+  }
+
+  /**
+   * Assert that the given ListView control has any data items.
+   *
+   * @param listView The control
+   */
+  public static void assertHasItems(ListView listView) {
+    if (listView == null) {
+      throw new AssertionError(I18N.getString(NODE_IS_NULL));
+    }
+    if (listView.getItems() == null) {
+      throw new AssertionError(listView + " should have items, but .getItems() is null");
+    }
+    final int size = listView.getItems().size();
+
+    if (size < 1) {
+      throw new AssertionError(listView + " should have items, but actually has " + size);
+    }
+  }
+
+  /**
+   * Assert that the given TableView control has any data items.
+   *
+   * @param tableView The control
+   */
+  public static void assertHasItems(TableView tableView) {
+    if (tableView == null) {
+      throw new AssertionError(I18N.getString(NODE_IS_NULL));
+    }
+    if (tableView.getItems() == null) {
+      throw new AssertionError(tableView + " should have items, but .getItems() is null");
+    }
+    final int size = tableView.getItems().size();
+
+    if (size < 1) {
+      throw new AssertionError(tableView + " should have items, but actually has " + size);
+    }
+  }
+
+  /**
+   * Assert that the given node does not have the given CSS style class
+   * assigned.
+   *
+   * @param node The node, must not be null.
+   * @param styleClass The CSS style class, must not be blank or null.
+   */
+  public static void assertHasNotStyleClass(Node node, String styleClass) {
+    if (node == null) {
+      throw new AssertionError(I18N.getString(NODE_IS_NULL));
+    }
+    if (styleClass == null) {
+      throw new IllegalArgumentException("styleClass must not be null");
+    }
+    if (styleClass.isBlank()) {
+      throw new IllegalArgumentException("styleClass must not be blank.");
+    }
+    if (node.getStyleClass().contains(styleClass)) {
+      throw new AssertionError(node + " should not have CSS style class '" + styleClass + "', but does.");
+    }
+  }
+
+  /**
+   * Assert that the given node does have the given CSS style class assigned.
+   *
+   * @param node The node, must not be null.
+   * @param styleClass The CSS style class, must not be blank or null.
+   */
+  public static void assertHasStyleClass(Node node, String styleClass) {
+    if (node == null) {
+      throw new AssertionError(I18N.getString(NODE_IS_NULL));
+    }
+    if (styleClass == null) {
+      throw new IllegalArgumentException("styleClass must not be null");
+    }
+    if (styleClass.isBlank()) {
+      throw new IllegalArgumentException("styleClass must not be blank.");
+    }
+    if (!node.getStyleClass().contains(styleClass)) {
+      throw new AssertionError(node + " should have CSS style class '" + styleClass + "', but does not.");
     }
   }
 
