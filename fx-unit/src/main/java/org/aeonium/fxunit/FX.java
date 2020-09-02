@@ -22,6 +22,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.ButtonBase;
@@ -35,6 +36,9 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.robot.Robot;
 import javafx.stage.Stage;
 
 /**
@@ -93,6 +97,25 @@ public class FX {
     } else {
       throw new AssertionError("This node is not an instance of Parent");
     }
+  }
+
+  public FX click() {
+    final Bounds boundsInLocal = this.node.getBoundsInLocal();
+    final Bounds sceneCoords = this.node.localToScene(boundsInLocal);
+    final Bounds screenCoords = this.node.localToScreen(boundsInLocal);
+    try {
+      FXHelper.runAndWait(() -> {
+        this.node.fireEvent(new MouseEvent(MouseEvent.MOUSE_CLICKED,
+                sceneCoords.getMinX(), sceneCoords.getMinY(),
+                screenCoords.getMinX(), screenCoords.getMinY(),
+                MouseButton.PRIMARY, 1,
+                true, true, true, true, true, true, true, true, true, true, null));
+      });
+    } catch (ExecutionException ex) {
+      Logger.getLogger(FX.class.getName()).log(Level.SEVERE, null, ex);
+      throw new RuntimeException(ex);
+    }
+    return this;
   }
 
   /**
