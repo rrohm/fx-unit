@@ -11,20 +11,41 @@ fx-unit aims to be a utility for unit testing JavaFX controllers as well as inte
 At present, it offers these additional assertions: 
 
 ```java
+AssertFX.assertDisabled(javafx.scene.Node node)
+AssertFX.assertEditable(javafx.scene.Node node)
+AssertFX.assertEnabled(javafx.scene.Node node)
 AssertFX.assertFocused(javafx.scene.Node node);
+AssertFX.assertHasChildren(javafx.scene.Parent parent, int children)
+AssertFX.assertHasItems(javafx.scene.control.ChoiceBox choiceBox)
+AssertFX.assertHasItems(javafx.scene.control.ChoiceBox choiceBox, int itemCount)
+AssertFX.assertHasItems(javafx.scene.control.ComboBox comboBox) 	
+AssertFX.assertHasItems(javafx.scene.control.ComboBox comboBox, int itemCount) 	
+AssertFX.assertHasItems(javafx.scene.control.ListView listView) 	
+AssertFX.assertHasItems(javafx.scene.control.ListView listView, int itemCount) 	
+AssertFX.assertHasItems(javafx.scene.control.TableView tableView) 	
+AssertFX.assertHasItems(javafx.scene.control.TableView tableView, int itemCount) 	
+AssertFX.assertHasNotStyleClass(javafx.scene.Node node, String styleClass) 	
+AssertFX.assertHasStyleClass(javafx.scene.Node node, String styleClass) 	
+AssertFX.assertManaged(javafx.scene.Node node) 	
+AssertFX.assertNotManaged(javafx.scene.Node node) 	
+AssertFX.assertNotSelected(javafx.scene.control.ToggleButton toggleButton)
+AssertFX.assertSelected(javafx.scene.control.ToggleButton toggleButton)
 AssertFX.assertNotShowing(javafx.stage.Window window)
 AssertFX.assertNotVisible(javafx.scene.Node node)
 AssertFX.assertSelected(javafx.scene.control.TabPane tabPane, java.lang.String id)
 AssertFX.assertShowing(javafx.stage.Window window)
+AssertFX.assertText(javafx.scene.control.Labeled node, String text) 	
+AssertFX.assertText(javafx.scene.control.TextInputControl node, String text) 	
+AssertFX.assertTooltipText(javafx.scene.control.Control node, String text) 	
 AssertFX.assertVisible(javafx.scene.Node node)
 ```
+There is also a fluent-style API, that supports these assertions, plus methods for simulating interaction with the UI.
 
 Also, Hamcrest matchers will be provided. At present, there are the first two candidates: 
 ```java
 public static Matcher<Node> isVisible()
 public static Matcher<Node> isNotVisible()
 ``` 
-Currently, a fluent-style API is in active development, coming soon.
 
 # About the Project
 
