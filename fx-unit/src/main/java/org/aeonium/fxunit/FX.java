@@ -53,32 +53,14 @@ public class FX {
 
   private final Node node;
 
-  public static FX lookup(String id) {
-    if (FXUnit.getStage() == null) {
-      throw new NullPointerException("FXUnit.getStage() is null. Did you initialize the framework properly or do you rather want to test a stage created by yourself? In this case have a look at FX.lookup(stage, id)");
-    }
-    if (FXUnit.getStage().getScene() == null) {
-      throw new NullPointerException("FXUnit.getStage() has no valid scene. Did you load content?");
-    }
-    Node node = FXUnit.getStage().getScene().lookup(id);
-    if (node == null) {
-      throw new AssertionError(NO_NODE_FOUND_FOR_ID_ + id);
-    }
-    return new FX(node);
-  }
-
-  public static FX lookup(Stage stage, String id) {
-    if (stage == null) {
-      throw new NullPointerException("stage must not be null.");
-    }
-    if (stage.getScene() == null) {
-      throw new NullPointerException("stage.getScene() must not be null.");
-    }
-    Node node = stage.getScene().lookup(id);
-    if (node == null) {
-      throw new AssertionError(NO_NODE_FOUND_FOR_ID_ + id);
-    }
-    return new FX(node);
+  /**
+   * Create a new FX-Unit test helper that operates on the given node. The given
+   * node may be tested with the fluent API of fx-unit.
+   *
+   * @param node
+   */
+  public FX(Node node) {
+    this.node = node;
   }
 
   /**
@@ -116,6 +98,122 @@ public class FX {
       throw new RuntimeException(ex);
     }
     return this;
+  }
+
+  /**
+   * Convenience method for delaying for a number of milliseconds – if not
+   * running on the JavaFX Application Thread. In this case, the method will not
+   * wait, in order to not slow down the UI. Hence, use this method if you think
+   * it is necessary to allow UI rendering to catch up with state changes like
+   * selection, highlighting etc.
+   *
+   * @param millis Milliseconds to delay, if not running on the JavaFX
+   * Application Thread.
+   * @return The FX instance, for call chaining ("fluent API").
+   */
+  public FX delay(int millis) {
+    if (!Platform.isFxApplicationThread()) {
+      try {
+        Thread.sleep(millis);
+      } catch (InterruptedException ex) {
+        Logger.getLogger(FX.class.getName()).log(Level.SEVERE, null, ex);
+        Thread.currentThread().interrupt();
+      }
+    } else {
+      LOG.warning("Delaying on the FX application thread? Seriously?");
+    }
+    return this;
+  }
+
+  /**
+   * Execute the fire() method on the selected node, i.e., simulate a mouse
+   * click with the JavaFX API. This method takes care of firing the button on
+   * the FX application thread.
+   *
+   * @return The FX instance, for call chaining ("fluent API").
+   */
+  public FX fire() {
+    if (node instanceof ButtonBase) {
+      ButtonBase button = (ButtonBase) node;
+      try {
+        FXHelper.runAndWait(() -> {
+          button.fire();
+        });
+      } catch (ExecutionException ex) {
+        Logger.getLogger(FX.class.getName()).log(Level.SEVERE, null, ex);
+        throw new RuntimeException(ex);
+      }
+    } else {
+      throw new UnsupportedOperationException("Type " + this.node.getClass().getName() + " is not supported. Currently, fire() supports ButtonBase and descendants only.");
+    }
+    return this;
+  }
+
+  /**
+   * Try to set the focus on the selected node and assure it has the focus.
+   *
+   * @return The FX instance, for call chaining ("fluent API").
+   */
+  public FX focus() {
+    try {
+      FXHelper.runAndWait(() -> {
+        this.node.requestFocus();
+      });
+    } catch (ExecutionException ex) {
+      Logger.getLogger(FX.class.getName()).log(Level.SEVERE, null, ex);
+      throw new RuntimeException(ex);
+    }
+    AssertFX.assertFocused(this.node);
+    return this;
+  }
+
+  /**
+   * Assert that the selected node has a context menu and show it.
+   *
+   * @return An {@link FXMenu} wrapper for fluent testing on the context menu as
+   * SUT.
+   */
+  public FXMenu getContextMenu() {
+    if (this.node instanceof Control) {
+      Control control = (Control) this.node;
+      ContextMenu contextMenu = control.getContextMenu();
+      if (contextMenu == null) {
+        throw new AssertionError("This node no context menu.");
+      }
+      try {
+        FXHelper.runAndWait(() -> {
+          contextMenu.show(control.getScene().getWindow());
+        });
+      } catch (ExecutionException ex) {
+        Logger.getLogger(FX.class.getName()).log(Level.SEVERE, null, ex);
+        throw new RuntimeException(ex);
+      }
+      return new FXMenu(contextMenu.getItems());
+    } else {
+      throw new AssertionError("This node cannot have a context menu. It is of type " + this.node.getClass());
+    }
+  }
+
+  /**
+   * Returns the node (SUT, system-under-test) that this instance operates on -
+   * must not return null, since construction of an instance fails if the node
+   * is not found.
+   *
+   * @param <T>
+   * @return The node that this instance operates on.
+   */
+  public <T extends Node> T getNode() {
+    if (this.node == null) {
+      throw new NullPointerException("This method should not return null. Please use the constructor FX(Node node) only.");
+    }
+    return (T) this.node;
+  }
+
+  public <T extends Node> T getNode(Class<T> t) {
+    if (this.node == null) {
+      throw new NullPointerException("This method should not return null. Please use the constructor FX(Node node) only.");
+    }
+    return (T) this.node;
   }
 
   /**
@@ -383,105 +481,41 @@ public class FX {
     return this;
   }
 
-  /**
-   * Create a new FX-Unit test helper that operates on the given node. The given
-   * node may be tested with the fluent API of fx-unit.
-   *
-   * @param node
-   */
-  public FX(Node node) {
-    this.node = node;
+  public static FX lookup(String id) {
+    if (FXUnit.getStage() == null) {
+      throw new NullPointerException("FXUnit.getStage() is null. Did you initialize the framework properly or do you rather want to test a stage created by yourself? In this case have a look at FX.lookup(stage, id)");
+    }
+    if (FXUnit.getStage().getScene() == null) {
+      throw new NullPointerException("FXUnit.getStage() has no valid scene. Did you load content?");
+    }
+    Node node = FXUnit.getStage().getScene().lookup(id);
+    if (node == null) {
+      throw new AssertionError(NO_NODE_FOUND_FOR_ID_ + id);
+    }
+    return new FX(node);
   }
 
-  /**
-   * Execute the fire() method on the selected node, i.e., simulate a mouse
-   * click with the JavaFX API. This method takes care of firing the button on
-   * the FX application thread.
-   *
-   * @return The FX instance, for call chaining ("fluent API").
-   */
-  public FX fire() {
-    if (node instanceof ButtonBase) {
-      ButtonBase button = (ButtonBase) node;
-      try {
-        FXHelper.runAndWait(() -> {
-          button.fire();
-        });
-      } catch (ExecutionException ex) {
-        Logger.getLogger(FX.class.getName()).log(Level.SEVERE, null, ex);
-        throw new RuntimeException(ex);
-      }
-    } else {
-      throw new UnsupportedOperationException("Type " + this.node.getClass().getName() + " is not supported. Currently, fire() supports ButtonBase and descendants only.");
+  public static FX lookup(Stage stage, String id) {
+    if (stage == null) {
+      throw new NullPointerException("stage must not be null.");
     }
-    return this;
+    if (stage.getScene() == null) {
+      throw new NullPointerException("stage.getScene() must not be null.");
+    }
+    Node node = stage.getScene().lookup(id);
+    if (node == null) {
+      throw new AssertionError(NO_NODE_FOUND_FOR_ID_ + id);
+    }
+    return new FX(node);
   }
 
-  /**
-   * Try to set the focus on the selected node and assure it has the focus.
-   *
-   * @return The FX instance, for call chaining ("fluent API").
-   */
-  public FX focus() {
-    try {
-      FXHelper.runAndWait(() -> {
-        this.node.requestFocus();
-      });
-    } catch (ExecutionException ex) {
-      Logger.getLogger(FX.class.getName()).log(Level.SEVERE, null, ex);
-      throw new RuntimeException(ex);
+  public static FX show(Node node) {
+    if (node == null) {
+      throw new NullPointerException("node is null.");
     }
-    AssertFX.assertFocused(this.node);
-    return this;
-  }
 
-  /**
-   * Assert that the selected node has a context menu and show it.
-   *
-   * @return An {@link FXMenu} wrapper for fluent testing on the context menu as
-   * SUT.
-   */
-  public FXMenu getContextMenu() {
-    if (this.node instanceof Control) {
-      Control control = (Control) this.node;
-      ContextMenu contextMenu = control.getContextMenu();
-      if (contextMenu == null) {
-        throw new AssertionError("This node no context menu.");
-      }
-      try {
-        FXHelper.runAndWait(() -> {
-          contextMenu.show(control.getScene().getWindow());
-        });
-      } catch (ExecutionException ex) {
-        Logger.getLogger(FX.class.getName()).log(Level.SEVERE, null, ex);
-        throw new RuntimeException(ex);
-      }
-      return new FXMenu(contextMenu.getItems());
-    } else {
-      throw new AssertionError("This node cannot have a context menu. It is of type " + this.node.getClass());
-    }
-  }
-
-  /**
-   * Returns the node (SUT, system-under-test) that this instance operates on -
-   * must not return null, since construction of an instance fails if the node
-   * is not found.
-   *
-   * @param <T>
-   * @return The node that this instance operates on.
-   */
-  public <T extends Node> T getNode() {
-    if (this.node == null) {
-      throw new NullPointerException("This method should not return null. Please use the constructor FX(Node node) only.");
-    }
-    return (T) this.node;
-  }
-
-  public <T extends Node> T getNode(Class<T> t) {
-    if (this.node == null) {
-      throw new NullPointerException("This method should not return null. Please use the constructor FX(Node node) only.");
-    }
-    return (T) this.node;
+    FXUnit.show(node);
+    return new FX(node);
   }
 
   public FX hasItems() {
@@ -672,31 +706,6 @@ public class FX {
       }
     } else {
       throw new UnsupportedOperationException("Type " + this.node.getClass().getName() + " is not supported. Currently, hasValue() supports ChoiceBox only.");
-    }
-    return this;
-  }
-
-  /**
-   * Convenience method for delaying for a number of milliseconds – if not
-   * running on the JavaFX Application Thread. In this case, the method will not
-   * wait, in order to not slow down the UI. Hence, use this method if you think
-   * it is necessary to allow UI rendering to catch up with state changes like
-   * selection, highlighting etc.
-   *
-   * @param millis Milliseconds to delay, if not running on the JavaFX
-   * Application Thread.
-   * @return The FX instance, for call chaining ("fluent API").
-   */
-  public FX delay(int millis) {
-    if (!Platform.isFxApplicationThread()) {
-      try {
-        Thread.sleep(millis);
-      } catch (InterruptedException ex) {
-        Logger.getLogger(FX.class.getName()).log(Level.SEVERE, null, ex);
-        Thread.currentThread().interrupt();
-      }
-    } else {
-      LOG.warning("Delaying on the FX application thread? Seriously?");
     }
     return this;
   }
