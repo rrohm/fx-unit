@@ -600,6 +600,41 @@ public class FX {
   }
 
   /**
+   * Move the mouse to the selected node, i.e., get the screen rectangle bounds
+   * and move the mouse to the center of it.
+   *
+   * @return The FX instance, for call chaining ("fluent API").
+   */
+  public FX mouseMoveTo() {
+    final Bounds localToScreen = this.node.localToScreen(this.node.getBoundsInLocal());
+    final double centerX = localToScreen.getCenterX();
+    final double centerY = localToScreen.getCenterY();
+    try {
+      FXHelper.runAndWait(() -> {
+        Robot robot = new Robot();
+        robot.mouseMove(centerX, centerY);
+      });
+    } catch (ExecutionException ex) {
+      Logger.getLogger(FX.class.getName()).log(Level.SEVERE, null, ex);
+      throw new RuntimeException(ex);
+    }
+    return this;
+  }
+  
+  public FX mouseClick() {
+    try {
+      FXHelper.runAndWait(() -> {
+        Robot robot = new Robot();
+        robot.mouseClick(MouseButton.PRIMARY);
+      });
+    } catch (ExecutionException ex) {
+      Logger.getLogger(FX.class.getName()).log(Level.SEVERE, null, ex);
+      throw new RuntimeException(ex);
+    }
+    return this;
+  }
+
+  /**
    * Select the n-th element of the wrapped control.
    *
    * @param <T> The item type
