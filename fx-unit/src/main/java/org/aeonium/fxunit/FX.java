@@ -18,13 +18,18 @@
  */
 package org.aeonium.fxunit;
 
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Accordion;
 import javafx.scene.control.ButtonBase;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
@@ -35,11 +40,14 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextInputControl;
+import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.robot.Robot;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 /**
  * Utility for testing with a fluent API.
@@ -51,7 +59,8 @@ public class FX {
   private static final String NO_NODE_FOUND_FOR_ID_ = "No node found for ID ";
   private static final String VALUE_OF_ = "Value of ";
 
-  private final Node node;
+  private Node node;
+  private Stage stage;
 
   /**
    * Create a new FX-Unit test helper that operates on the given node. The given
@@ -61,6 +70,27 @@ public class FX {
    */
   public FX(Node node) {
     this.node = node;
+    if (node.getScene() != null && node.getScene().getWindow() != null) {
+      this.stage = (Stage) node.getScene().getWindow();
+    } else {
+      this.stage = null;
+    }
+  }
+
+  public FX(Stage stage) {
+    this.stage = stage;
+    this.node = null;
+    if (stage.getScene() == null) {
+      stage.sceneProperty().addListener((ObservableValue<? extends Scene> ov, Scene t, Scene newScene) -> {
+        this.node = (newScene != null) ? newScene.getRoot() : null;
+      });
+    } else if (stage.getScene().getRoot() == null) {
+      stage.getScene().rootProperty().addListener((ObservableValue<? extends Parent> ov, Parent t, Parent newRoot) -> {
+        this.node = newRoot;
+      });
+    } else {
+      this.node = this.stage.getScene().getRoot();
+    }
   }
 
   /**
@@ -121,6 +151,40 @@ public class FX {
       }
     } else {
       LOG.warning("Delaying on the FX application thread? Seriously?");
+    }
+    return this;
+  }
+  
+  public FX delay(Duration duration ){
+    if (!Platform.isFxApplicationThread()) {
+      try {
+        Thread.sleep((long) duration.toMillis());
+      } catch (InterruptedException ex) {
+        Logger.getLogger(FX.class.getName()).log(Level.SEVERE, null, ex);
+        Thread.currentThread().interrupt();
+      }
+    } else {
+      LOG.warning("Delaying on the FX application thread? Seriously?");
+    }
+    return this;
+  }
+
+  public FX expand() {
+    if (node instanceof TitledPane) {
+      final TitledPane titledPane = (TitledPane) node;
+      FXHelper.expand(titledPane);
+    } else {
+      throw new UnsupportedOperationException("Type " + this.node.getClass().getName() + " is not supported. Currently, expand() supports TitledPane and descendants only.");
+    }
+    return this;
+  }
+
+  public FX expand(int index) {
+    if (node instanceof Accordion) {
+      Accordion accordion = (Accordion) node;
+      FXHelper.expand(accordion, index);
+    } else {
+      throw new UnsupportedOperationException("Type " + this.node.getClass().getName() + " is not supported. Currently, expand() supports Accordion and descendants only.");
     }
     return this;
   }
@@ -599,6 +663,60 @@ public class FX {
     return this;
   }
 
+  public FX keyType(KeyCode code) {
+    Thread t = new Thread(() -> {
+      try {
+        FXHelper.runAndWait(() -> {
+          Robot robot = new Robot();
+          robot.keyType(code);
+        });
+      } catch (ExecutionException ex) {
+        Logger.getLogger(FX.class.getName()).log(Level.SEVERE, null, ex);
+        throw new RuntimeException(ex);
+      }
+    });
+    t.setDaemon(true);
+    t.start();
+    try {
+      Thread.sleep(100);
+    } catch (InterruptedException ex) {
+      Thread.currentThread().interrupt();
+    }
+    return this;
+  }
+
+  public FX keyType(String text) {
+    try {
+      FXHelper.runAndWait(() -> {
+        Robot robot = new Robot();
+
+        for (char c : text.toCharArray()) {
+          robot.keyType(FXHelper.getKeycode(c));
+        }
+      });
+    } catch (ExecutionException ex) {
+      Logger.getLogger(FX.class.getName()).log(Level.SEVERE, null, ex);
+      throw new RuntimeException(ex);
+    }
+    try {
+      Thread.sleep(100);
+    } catch (InterruptedException ex) {
+      Thread.currentThread().interrupt();
+    }
+    return this;
+  }
+
+  public FX find(String id){
+    if (this.stage == null) {
+      throw new AssertionError("No stage definded.");
+    }
+    this.node = this.stage.getScene().lookup(id);
+    if (this.node == null) {
+      throw new AssertionError(NO_NODE_FOUND_FOR_ID_ + id);
+    }
+    return this;
+  }
+  
   /**
    * Move the mouse to the selected node, i.e., get the screen rectangle bounds
    * and move the mouse to the center of it.
@@ -620,7 +738,7 @@ public class FX {
     }
     return this;
   }
-  
+
   public FX mouseClick() {
     try {
       FXHelper.runAndWait(() -> {

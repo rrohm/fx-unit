@@ -26,9 +26,11 @@ import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.scene.Node;
+import javafx.scene.control.Accordion;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TitledPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
@@ -73,6 +75,25 @@ public final class FXHelper {
     invokeOnFXThread(() -> labeled.setText(""));
     doDelay();
   }
+  
+  public static void expand(TitledPane pane){
+    if (pane == null) {
+      throw new NullPointerException("No titled pane given.");
+    }
+    invokeOnFXThread(() -> pane.setExpanded(true));
+    doDelay();
+  }
+  
+  public static void expand(Accordion accordion, int index){
+    if (accordion == null) {
+      throw new NullPointerException("No accordion given");
+    }
+    if (index < 0 || index >= accordion.getPanes().size()) {
+      throw new IndexOutOfBoundsException("Accordion index is out of bounds: " + index);
+    }
+    invokeOnFXThread(() -> expand(accordion.getPanes().get(index)));
+    doDelay();
+  }
 
   /**
    * Find a tab sheet by ID in the given tab pane.
@@ -102,6 +123,32 @@ public final class FXHelper {
 
     invokeOnFXThread(node::requestFocus);
     doDelay();
+  }
+  
+  public static KeyCode getKeycode(Character c){
+    KeyCode keyCode = null;
+    final String t = c.toString();
+    switch (t) {
+      case " ":
+        keyCode = KeyCode.SPACE;
+        break;
+      case ".":
+        keyCode = KeyCode.PERIOD;
+        break;
+      case ",":
+        keyCode = KeyCode.COMMAND;
+        break;
+      case ":":
+        keyCode = KeyCode.COLON;
+        break;
+      default:
+        keyCode = KeyCode.getKeyCode(t.toUpperCase());
+        break;
+    }
+    if (keyCode == null) {
+      throw new FXUnitException("No keycode found for " + c);
+    }
+    return keyCode;
   }
 
   /**
@@ -196,28 +243,8 @@ public final class FXHelper {
    * @param c The character
    */
   public static void typeKey(Node target, Character c) {
-    final KeyCode keyCode;
     final String t = c.toString();
-    switch (t) {
-      case " ":
-        keyCode = KeyCode.SPACE;
-        break;
-      case ".":
-        keyCode = KeyCode.PERIOD;
-        break;
-      case ",":
-        keyCode = KeyCode.COMMAND;
-        break;
-      case ":":
-        keyCode = KeyCode.COLON;
-        break;
-      default:
-        keyCode = KeyCode.getKeyCode(t.toUpperCase());
-        break;
-    }
-    if (keyCode == null) {
-      throw new FXUnitException("No keycode found for " + c);
-    }
+    final KeyCode keyCode = getKeycode(c);
 
     invokeOnFXThread(() -> {
       Event.fireEvent(target, new KeyEvent(KeyEvent.KEY_PRESSED, t, t, keyCode, false, false, false, false));

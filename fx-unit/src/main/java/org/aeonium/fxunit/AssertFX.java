@@ -20,6 +20,7 @@ package org.aeonium.fxunit;
 
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.Accordion;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
@@ -29,6 +30,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextInputControl;
+import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.TreeTableView;
 import javafx.stage.Window;
@@ -105,6 +107,27 @@ public class AssertFX {
     }
     if (node.isDisabled()) {
       throw new AssertionError(NODE + node + " should be enabled, but is not.");
+    }
+  }
+
+  /**
+   * Assert that the given accordion has the titled pane with the given index
+   * expanded.
+   * 
+   * @param accordion Tha accordion to be checked
+   * @param index The index of the titled pane that should be expanded
+   */
+  public static void assertExpanded(Accordion accordion, int index) {
+    if (accordion == null) {
+      throw new AssertionError(I18N.getString(NODE_IS_NULL));
+    }
+    final TitledPane expandedPane = accordion.getExpandedPane();
+    if (expandedPane == null) {
+      throw new AssertionError(accordion + " has no pane expanded, but should have expanded pane with index " + index);
+    } else {
+      if (accordion.getPanes().indexOf(expandedPane) != index) {
+        throw new AssertionError(accordion + " should have expanded pane with index #" + index + ", but has expanded #" + accordion.getPanes().indexOf(expandedPane));
+      }
     }
   }
 
