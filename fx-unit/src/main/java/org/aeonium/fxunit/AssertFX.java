@@ -32,6 +32,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableView;
 import javafx.stage.Window;
 import org.aeonium.fxunit.i18n.I18N;
@@ -255,6 +256,28 @@ public class AssertFX {
 
     if (size != itemCount) {
       throw new AssertionError(tableView + " should have " + itemCount + " items, but actually has " + size);
+    }
+  }
+  
+  public static void assertHasItems(TreeTableView treetableView, int itemCount) {
+    if (treetableView == null) {
+      throw new AssertionError(I18N.getString(NODE_IS_NULL));
+    }
+    if (itemCount < 0) {
+      throw new IllegalArgumentException("Item count cannot be less than 0");
+    }
+    if (treetableView.getRoot() == null) {
+      throw new AssertionError(treetableView + " should have " + itemCount + " items, but .getRoot() is null");
+    }
+    final int size;
+    if (treetableView.getSelectionModel().getSelectedItem() == null) {
+      size = treetableView.getRoot().getChildren().size();
+    } else {
+      size = ((TreeItem)treetableView.getSelectionModel().getSelectedItem()).getChildren().size();
+    }
+      
+    if (size != itemCount) {
+      throw new AssertionError(treetableView + " should have " + itemCount + " items, but actually has " + size);
     }
   }
 

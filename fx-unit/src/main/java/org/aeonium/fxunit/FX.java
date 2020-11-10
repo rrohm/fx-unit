@@ -42,6 +42,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.TreeTableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -614,8 +615,11 @@ public class FX {
     } else if (this.node instanceof TableView) {
       TableView tableView = (TableView) this.node;
       AssertFX.assertHasItems(tableView, count);
+    } else if (this.node instanceof TreeTableView) {
+      TreeTableView treeTableView = (TreeTableView) this.node;
+      AssertFX.assertHasItems(treeTableView, count);
     } else {
-      throw new UnsupportedOperationException("Type " + this.node.getClass().getName() + " is not supported. Currently, hasItems() supports ChoiceBox, ComboBox, ListView and TableView only.");
+      throw new UnsupportedOperationException("Type " + this.node.getClass().getName() + " is not supported. Currently, hasItems() supports ChoiceBox, ComboBox, ListView, TableView and TreeTableView only.");
     }
     return this;
   }
@@ -799,30 +803,25 @@ public class FX {
         Logger.getLogger(FX.class.getName()).log(Level.SEVERE, null, ex);
         throw new RuntimeException(ex);
       }
+    } else if (this.node instanceof TreeTableView) {
+      TreeTableView<T> treeTableView = (TreeTableView<T>) this.node;
+      if (treeTableView.getRoot() == null) {
+        throw new IndexOutOfBoundsException("TreeTableView has no root node, i.e., no data.");
+      }
+      try {
+        FXHelper.runAndWait(() -> {
+          treeTableView.getSelectionModel().select(index);
+        });
+      } catch (ExecutionException ex) {
+        Logger.getLogger(FX.class.getName()).log(Level.SEVERE, null, ex);
+        throw new RuntimeException(ex);
+      }
     } else {
-      throw new UnsupportedOperationException("Type " + this.node.getClass().getName() + " is not supported. Currently, select() supports ChoiceBox, ListView and TableView only.");
+      throw new UnsupportedOperationException("Type " + this.node.getClass().getName() + " is not supported. Currently, select() supports ChoiceBox, ListView, TableView and TreeTableView only.");
     }
     return this;
   }
 
-//  public <T> FX select(T value) {
-//    if (this.node instanceof ChoiceBox) {
-//      ChoiceBox<T> choiceBox = (ChoiceBox<T>) this.node;
-//      choiceBox.getSelectionModel().select(value);
-//      if (choiceBox.getValue() == null) {
-//        if (choiceBox.getValue() != null) {
-//          throw new AssertionError("Value of " + this.node + " should be null, but is " + choiceBox.getValue());
-//        }
-//      } else {
-//        if (!value.equals(choiceBox.getValue())) {
-//          throw new AssertionError("Value of " + this.node + " should be " + value + ", but is " + choiceBox.getValue());
-//        }
-//      }
-//    } else {
-//      throw new UnsupportedOperationException("Type " + this.node.getClass().getName() + " is not supported. Currently, hasValue() supports ChoiceBox only.");
-//    }
-//    return this;
-//  }
   /**
    * Set the given text to the selected Labeld or TextInputControl and assert
    * that it has been set successfully.
