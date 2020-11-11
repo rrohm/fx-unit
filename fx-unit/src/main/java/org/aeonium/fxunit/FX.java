@@ -667,6 +667,51 @@ public class FX {
     return this;
   }
 
+  public FX keyPress(KeyCode code) {
+    Thread t = new Thread(() -> {
+      try {
+        FXHelper.runAndWait(() -> {
+          Robot robot = new Robot();
+          robot.keyPress(code);
+        });
+      } catch (ExecutionException ex) {
+        Logger.getLogger(FX.class.getName()).log(Level.SEVERE, null, ex);
+        throw new RuntimeException(ex);
+      }
+    });
+    t.setDaemon(true);
+    t.start();
+    try {
+      Thread.sleep(100);
+    } catch (InterruptedException ex) {
+      Thread.currentThread().interrupt();
+    }
+    return this;
+  }
+  
+
+  public FX keyRelease(KeyCode code) {
+    Thread t = new Thread(() -> {
+      try {
+        FXHelper.runAndWait(() -> {
+          Robot robot = new Robot();
+          robot.keyRelease(code);
+        });
+      } catch (ExecutionException ex) {
+        Logger.getLogger(FX.class.getName()).log(Level.SEVERE, null, ex);
+        throw new RuntimeException(ex);
+      }
+    });
+    t.setDaemon(true);
+    t.start();
+    try {
+      Thread.sleep(100);
+    } catch (InterruptedException ex) {
+      Thread.currentThread().interrupt();
+    }
+    return this;
+  }
+  
   public FX keyType(KeyCode code) {
     Thread t = new Thread(() -> {
       try {
@@ -695,7 +740,15 @@ public class FX {
         Robot robot = new Robot();
 
         for (char c : text.toCharArray()) {
+          final boolean isUpperCase = Character.isUpperCase(c);
+          if (isUpperCase) {
+            robot.keyPress(KeyCode.SHIFT);
+          }
           robot.keyType(FXHelper.getKeycode(c));
+            
+          if (isUpperCase) {
+            robot.keyRelease(KeyCode.SHIFT);
+          }
         }
       });
     } catch (ExecutionException ex) {

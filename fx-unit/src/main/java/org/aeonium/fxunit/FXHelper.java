@@ -141,6 +141,18 @@ public final class FXHelper {
       case ":":
         keyCode = KeyCode.COLON;
         break;
+      case ";":
+        keyCode = KeyCode.SEMICOLON;
+        break;
+      case "-":
+        keyCode = KeyCode.MINUS;
+        break;
+      case "_":
+        keyCode = KeyCode.UNDERSCORE;
+        break;
+      case "+":
+        keyCode = KeyCode.PLUS;
+        break;
       default:
         keyCode = KeyCode.getKeyCode(t.toUpperCase());
         break;
