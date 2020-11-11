@@ -46,14 +46,17 @@ public class DriverApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-
-      VBox box = new VBox(10.0, new Label("aeFXUnit Test running ..."), new ProgressIndicator(-1));
+      final Label label = new Label("fx-unit test running ...");
+      label.setTextFill(Color.WHITE);
+      final ProgressIndicator progressIndicator = new ProgressIndicator(-1);
+      progressIndicator.setStyle("-fx-progress-color: #fff");
+      final VBox box = new VBox(10.0, label, progressIndicator);
       box.setPadding(new Insets(10.0));
       box.setAlignment(Pos.CENTER);
-      box.setBackground(new Background(new BackgroundFill(Color.rgb(255, 255, 255), CornerRadii.EMPTY, Insets.EMPTY)));
+      box.setBackground(new Background(new BackgroundFill(Color.rgb(0, 102, 102), CornerRadii.EMPTY, Insets.EMPTY)));
 
-      Scene scene = new Scene(box);
-      stage.setTitle("JavaFX UnitTest dummy.");
+      final Scene scene = new Scene(box);
+      stage.setTitle("fx-unit test running ...");
       stage.setScene(scene);
       stage.initStyle(StageStyle.UNDECORATED);
       stage.show();
