@@ -155,8 +155,8 @@ public class FX {
     }
     return this;
   }
-  
-  public FX delay(Duration duration ){
+
+  public FX delay(Duration duration) {
     if (!Platform.isFxApplicationThread()) {
       try {
         Thread.sleep((long) duration.toMillis());
@@ -583,6 +583,18 @@ public class FX {
     return new FX(node);
   }
 
+  /**
+   * Assert that the selected node has an item count > 0. Supported are
+   * instances or descendants of:
+   * <ul>
+   * <li><code>javafx.scene.control.ChoiceBox</code></li>
+   * <li><code>javafx.scene.control.ComboBox</code></li>
+   * <li><code>javafx.scene.control.ListView</code></li>
+   * <li><code>javafx.scene.control.TableView</code></li>
+   * </ul>
+   *
+   * @return The FX instance, for call chaining ("fluent API").
+   */
   public FX hasItems() {
     if (this.node instanceof ChoiceBox) {
       ChoiceBox choiceBox = (ChoiceBox) this.node;
@@ -688,7 +700,6 @@ public class FX {
     }
     return this;
   }
-  
 
   public FX keyRelease(KeyCode code) {
     Thread t = new Thread(() -> {
@@ -711,7 +722,7 @@ public class FX {
     }
     return this;
   }
-  
+
   public FX keyType(KeyCode code) {
     Thread t = new Thread(() -> {
       try {
@@ -745,7 +756,7 @@ public class FX {
             robot.keyPress(KeyCode.SHIFT);
           }
           robot.keyType(FXHelper.getKeycode(c));
-            
+
           if (isUpperCase) {
             robot.keyRelease(KeyCode.SHIFT);
           }
@@ -763,7 +774,7 @@ public class FX {
     return this;
   }
 
-  public FX find(String id){
+  public FX find(String id) {
     if (this.stage == null) {
       throw new AssertionError("No stage definded.");
     }
@@ -773,7 +784,7 @@ public class FX {
     }
     return this;
   }
-  
+
   /**
    * Move the mouse to the selected node, i.e., get the screen rectangle bounds
    * and move the mouse to the center of it.
