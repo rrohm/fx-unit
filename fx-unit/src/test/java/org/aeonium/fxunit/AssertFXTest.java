@@ -118,7 +118,7 @@ public class AssertFXTest {
   @Test
   @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertDisabled_negative_null() throws Exception {
-    System.out.println("disabled");
+    System.out.println("disabled_negative_null");
     Assertions.assertThrows(AssertionError.class, () -> {
       AssertFX.assertDisabled(null);
     });
@@ -127,7 +127,7 @@ public class AssertFXTest {
   @Test
   @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertDisabled_negative_false() throws Exception {
-    System.out.println("disabled");
+    System.out.println("disabled_negative_false");
     Assertions.assertThrows(AssertionError.class, () -> {
       Node node = new Button("button");
       node.disableProperty().set(false);
@@ -239,7 +239,7 @@ public class AssertFXTest {
   @Test
   @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertFocused_negative_null_node() throws Exception {
-    System.out.println("assertFocused");
+    System.out.println("assertFocused_negative_null_node");
     Node node = null;
 
     Assertions.assertThrows(AssertionError.class, () -> {
@@ -250,7 +250,7 @@ public class AssertFXTest {
   @Test
   @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertFocused_negative() throws Exception {
-    System.out.println("assertFocused");
+    System.out.println("assertFocused_negative");
     Assertions.assertThrows(AssertionError.class, () -> {
       Node node = new Button("button");
       node.requestFocus();
@@ -274,7 +274,7 @@ public class AssertFXTest {
   @Test
   @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertHasChildren_negative_null() throws Exception {
-    System.out.println("assertHasChildren");
+    System.out.println("assertHasChildren_negative_null");
     Assertions.assertThrows(AssertionError.class, () -> {
       AssertFX.assertHasChildren(null, 0);
     });
@@ -283,7 +283,7 @@ public class AssertFXTest {
   @Test
   @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertHasChildren_negative_1() throws Exception {
-    System.out.println("assertHasChildren");
+    System.out.println("assertHasChildren_negative_1");
     Assertions.assertThrows(AssertionError.class, () -> {
       Pane node = new Pane(new Label("a Child"));
 
@@ -303,7 +303,7 @@ public class AssertFXTest {
   @Test
   @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertHasChildren_negative_minus1() throws Exception {
-    System.out.println("assertHasChildren");
+    System.out.println("assertHasChildren_negative_minus1");
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
       Pane node = new Pane(new Label("a Child"));
 
@@ -340,7 +340,7 @@ public class AssertFXTest {
   @Test
   @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertManaged_negative_null() throws Exception {
-    System.out.println("assertManaged");
+    System.out.println("assertManaged_negative_null");
     Assertions.assertThrows(AssertionError.class, () -> {
       AssertFX.assertManaged(null);
     });
@@ -349,7 +349,7 @@ public class AssertFXTest {
   @Test
   @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertManaged_negative_false() throws Exception {
-    System.out.println("assertManaged");
+    System.out.println("assertManaged_negative_false");
     Assertions.assertThrows(AssertionError.class, () -> {
       Node node = new Button("button");
       node.setManaged(false);
@@ -388,7 +388,7 @@ public class AssertFXTest {
   @Test//(expected = AssertionError.class)
   @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertNotManaged_negative_null() throws Exception {
-    System.out.println("assertNotManaged");
+    System.out.println("assertNotManaged_negative_null");
     Assertions.assertThrows(AssertionError.class, () -> {
       AssertFX.assertNotManaged(null);
     });
@@ -466,7 +466,7 @@ public class AssertFXTest {
   @Test
   @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertNotShowing_negative() throws Exception {
-    System.out.println("assertNotShowing");
+    System.out.println("assertNotShowing_negative");
 
     Assertions.assertThrows(AssertionError.class, () -> {
       final CountDownLatch latch = new CountDownLatch(1);
@@ -485,7 +485,7 @@ public class AssertFXTest {
   @Test
   @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertNotShowing_negative_null_window() throws Exception {
-    System.out.println("assertNotShowing");
+    System.out.println("assertNotShowing_negative_null_window(");
     Assertions.assertThrows(AssertionError.class, () -> {
       AssertFX.assertNotShowing(null);
     }, I18N.getString(I18N.WINDOW_IS_NULL));
@@ -518,7 +518,7 @@ public class AssertFXTest {
   @Test
   @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertNotVisible_negative() throws Exception {
-    System.out.println("assertNotVisible");
+    System.out.println("assertNotVisible_negative");
     Assertions.assertThrows(AssertionError.class, () -> {
       Node node = new Button("button");
       node.requestFocus();
@@ -540,7 +540,7 @@ public class AssertFXTest {
   @Test
   @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertNotVisible_negative_null_node() throws Exception {
-    System.out.println("assertNotVisible");
+    System.out.println("assertNotVisible_negative_null_node");
     Assertions.assertThrows(AssertionError.class, () -> {
       Node node = null;
       AssertFX.assertNotVisible(node);
@@ -549,7 +549,7 @@ public class AssertFXTest {
 
   @Test
   public void testAssertSelected_Toggle() throws Exception {
-    System.out.println("assertSelected");
+    System.out.println("assertSelected_Toggle");
     FlowPane tb = new FlowPane(Orientation.VERTICAL);
     ToggleButton tb1 = new ToggleButton("First");
     tb1.setId("first");
@@ -577,7 +577,7 @@ public class AssertFXTest {
   @Test
   @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertSelected_Toggle_false() throws Exception {
-    System.out.println("assertSelected");
+    System.out.println("assertSelected_Toggle_false");
     Assertions.assertThrows(AssertionError.class, () -> {
       FlowPane tb = new FlowPane(Orientation.VERTICAL);
       ToggleButton tb1 = new ToggleButton("First");
@@ -606,7 +606,7 @@ public class AssertFXTest {
   @Test
   @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertSelected_Toggle_negative_null() throws Exception {
-    System.out.println("assertSelected");
+    System.out.println("assertSelected_Toggle_negative_null");
     Assertions.assertThrows(AssertionError.class, () -> {
       ToggleButton tb1 = null;
       AssertFX.assertSelected(tb1);
@@ -616,7 +616,7 @@ public class AssertFXTest {
   @Test
   @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertSelected_Toggle_negative_notSelected() throws Exception {
-    System.out.println("assertSelected");
+    System.out.println("assertSelected_Toggle_negative_notSelected");
     Assertions.assertThrows(AssertionError.class, () -> {
       FlowPane tb = new FlowPane(Orientation.VERTICAL);
       ToggleButton tb1 = new ToggleButton("First");
@@ -706,7 +706,7 @@ public class AssertFXTest {
   @Test
   @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertSelected_TabPane_negative_tabPane_null() throws Exception {
-    System.out.println("assertSelected");
+    System.out.println("assertSelected_TabPane_negative_tabPane_null");
 
     Assertions.assertThrows(AssertionError.class, () -> {
       TabPane tabPane = null;
@@ -718,7 +718,7 @@ public class AssertFXTest {
   @Test
   @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertSelected_TabPane_negative_id_null() throws Exception {
-    System.out.println("assertSelected");
+    System.out.println("assertSelected_TabPane_negative_id_null");
     Assertions.assertThrows(AssertionError.class, () -> {
       TabPane tabPane = new TabPane();
       Tab tab1 = new Tab("First");
@@ -748,7 +748,7 @@ public class AssertFXTest {
   @Test
   @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertSelected_TabPane_negative_id_nonexistent() throws Exception {
-    System.out.println("assertSelected");
+    System.out.println("assertSelected_TabPane_negative_id_nonexistent");
     Assertions.assertThrows(AssertionError.class, () -> {
       TabPane tabPane = new TabPane();
       Tab tab1 = new Tab("First");
@@ -777,7 +777,7 @@ public class AssertFXTest {
   @Test
   @SuppressWarnings("ThrowableResultIgnored")
   public void testAssertSelected_TabPane_negative_null_selection() throws Exception {
-    System.out.println("assertSelected");
+    System.out.println("assertSelected_TabPane_negative_null_selection");
     Assertions.assertThrows(AssertionError.class, () -> {
       TabPane tabPane = new TabPane();
 

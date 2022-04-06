@@ -18,12 +18,10 @@
  */
 package org.aeonium.fxunit;
 
-import java.time.temporal.ChronoUnit;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
@@ -546,6 +544,13 @@ public class FX {
     return this;
   }
 
+  /**
+   * Look up a node by ID selector from the current testing stage. Throws an
+   * AssertionError if the node is not found.
+   *
+   * @param id The node ID selector.
+   * @return The node.
+   */
   public static FX lookup(String id) {
     if (FXUnit.getStage() == null) {
       throw new NullPointerException("FXUnit.getStage() is null. Did you initialize the framework properly or do you rather want to test a stage created by yourself? In this case have a look at FX.lookup(stage, id)");
@@ -574,6 +579,13 @@ public class FX {
     return new FX(node);
   }
 
+  /**
+   * Show the given node on a new testing stage. Use this method as a starting
+   * point for testing a node on a new testing stage.
+   *
+   * @param node
+   * @return An FX instance.
+   */
   public static FX show(Node node) {
     if (node == null) {
       throw new NullPointerException("node is null.");

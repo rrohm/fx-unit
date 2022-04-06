@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
@@ -43,7 +44,7 @@ import org.aeonium.fxunit.DriverApp.FXUnitApp;
 public class FXUnit {
 
   private static final String LOCATION_IS_NOT_SET = "Location is not set. Please provide a valid URL.";
-  
+
   private static Object controller;
   private static Parent root;
   private static Stage stage;
@@ -182,14 +183,35 @@ public class FXUnit {
     }
   }
 
+  /**
+   * Show the given node in a testing stage. The method waits for the stage to
+   * be showen on the JavaFX thread.
+   *
+   * @param node The node to test.
+   */
   public static void show(Node node) {
+    final CountDownLatch latch = new CountDownLatch(1);
     Platform.runLater(() -> {
       showTestingStage(node);
+      latch.countDown();
     });
 
-    FXHelper.sleep();
+    try {
+      latch.await();
+    } catch (InterruptedException ex) {
+      Thread.currentThread().interrupt();
+    }
   }
 
+  /**
+   * Load an FXML UI into a new (undecorated) stage and show it. This method
+   * internally uses {@link #load(java.net.URL) } which sets the references to
+   * the current {@link #getController() controller} and the current
+   * {@link #getRoot() root node}. The method waits for the stage to be showen
+   * on the JavaFX thread.
+   *
+   * @param url The url string for the FXML document do test.
+   */
   public static void show(String url) {
     show(FXUnit.class.getResource(url));
   }
@@ -198,46 +220,83 @@ public class FXUnit {
    * Load an FXML UI into a new (undecorated) stage and show it. This method
    * internally uses {@link #load(java.net.URL) } which sets the references to
    * the current {@link #getController() controller} and the current
-   * {@link #getRoot() root node}.
+   * {@link #getRoot() root node}. The method waits for the stage to be showen
+   * on the JavaFX thread.
    *
    * @param url URL of the FXML file.
    */
   public static void show(URL url) {
+    final CountDownLatch latch = new CountDownLatch(1);
     Platform.runLater(() -> {
       load(url);
       showTestingStage(url);
+      latch.countDown();
     });
 
-    FXHelper.sleep();
-  }
-
-  public static void show(URL url, ResourceBundle rb) {
-    Platform.runLater(() -> {
-      load(url, rb);
-      showTestingStage(url);
-    });
-
-    FXHelper.sleep();
-  }
-
-  public static void show(URL url, Class controller) {
-    Platform.runLater(() -> {
-      load(url, controller);
-      showTestingStage(url);
-    });
-
-    FXHelper.sleep();
+    try {
+      latch.await();
+    } catch (InterruptedException ex) {
+      Thread.currentThread().interrupt();
+    }
   }
 
   /**
-   * Close the current stage, if it is not null, and add a delay of a second, 
+   * Load an FXML UI into a new (undecorated) stage and show it. This method
+   * internally uses {@link #load(java.net.URL, java.util.ResourceBundle)} which
+   * sets the references to the current {@link #getController() controller} and
+   * the current {@link #getRoot() root node}. The method waits for the stage to
+   * be showen on the JavaFX thread.
+   *
+   * @param url URL of the FXML file.
+   * @param rb The resource bundle for I18N.
+   */
+  public static void show(URL url, ResourceBundle rb) {
+    final CountDownLatch latch = new CountDownLatch(1);
+    Platform.runLater(() -> {
+      load(url, rb);
+      showTestingStage(url);
+      latch.countDown();
+    });
+
+    try {
+      latch.await();
+    } catch (InterruptedException ex) {
+      Thread.currentThread().interrupt();
+    }
+  }
+
+  /**
+   * Load an FXML UI into a new (undecorated) stage and show it, using the given
+   * controller object for this FXML UI. The method waits for the stage to be
+   * showen on the JavaFX thread.
+   *
+   * @param url URL of the FXML file.
+   * @param controller The controller instance to use with the UI to test.
+   */
+  public static void show(URL url, Class controller) {
+    final CountDownLatch latch = new CountDownLatch(1);
+    Platform.runLater(() -> {
+      load(url, controller);
+      showTestingStage(url);
+      latch.countDown();
+    });
+
+    try {
+      latch.await();
+    } catch (InterruptedException ex) {
+      Thread.currentThread().interrupt();
+    }
+  }
+
+  /**
+   * Close the current stage, if it is not null, and add a delay of a second,
    * e.g., to ensure cleanups to get actual done.
    */
   public static void closeStage() {
     if (stage != null) {
       FXHelper.shutdownStage(stage);
     }
-    
+
     try {
       Thread.sleep(1000);
     } catch (InterruptedException ex) {
@@ -275,6 +334,8 @@ public class FXUnit {
       scene = new Scene(parent);
     }
     stage.setScene(scene);
+//    stage.setWidth(node.prefWidth(stage.getWidth()));
+//    stage.setHeight(node.prefHeight(stage.getHeight()));
     stage.show();
   }
 
