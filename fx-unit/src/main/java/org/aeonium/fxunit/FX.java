@@ -786,6 +786,12 @@ public class FX {
     return this;
   }
 
+  /**
+   * Find a node by ID within the scene under test.
+   *
+   * @param id The node ID.
+   * @return
+   */
   public FX find(String id) {
     if (this.stage == null) {
       throw new AssertionError("No stage definded.");
