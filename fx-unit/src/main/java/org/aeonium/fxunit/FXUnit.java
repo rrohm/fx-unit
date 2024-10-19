@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2024 Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -96,7 +96,11 @@ public class FXUnit {
     Thread t = new Thread("FXUnit Init Thread") {
       @Override
       public void run() {
-        Application.launch(FXUnitApp.class, new String[0]);
+        try {
+          Application.launch(FXUnitApp.class, new String[0]);
+        } catch (IllegalStateException e) {
+          System.err.println(e.getMessage());
+        }
       }
     };
     t.setDaemon(true);
