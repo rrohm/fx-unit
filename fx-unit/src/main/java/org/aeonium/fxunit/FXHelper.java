@@ -199,7 +199,7 @@ public final class FXHelper {
     if (Platform.isFxApplicationThread()) {
       runnable.run();
     } else {
-      FutureTask future = new FutureTask(runnable, null);
+      FutureTask<Void> future = new FutureTask<>(runnable, null);
       Platform.runLater(future);
       try {
         future.get();

@@ -67,6 +67,7 @@ public class FXUnit {
    * @param <T> The type of the controller.
    * @return The controller.
    */
+  @SuppressWarnings("unchecked")
   public static <T> T getController() {
     return (T) controller;
   }
@@ -169,7 +170,8 @@ public class FXUnit {
    * @param url
    * @param controllerClass
    */
-  public static void load(URL url, Class controllerClass) {
+  @SuppressWarnings("unchecked")
+  public static void load(URL url, Class<?> controllerClass) {
     if (url == null) {
       throw new NullPointerException(LOCATION_IS_NOT_SET);
     }
@@ -277,7 +279,7 @@ public class FXUnit {
    * @param url URL of the FXML file.
    * @param controller The controller instance to use with the UI to test.
    */
-  public static void show(URL url, Class controller) {
+  public static void show(URL url, Class<?> controller) {
     final CountDownLatch latch = new CountDownLatch(1);
     Platform.runLater(() -> {
       load(url, controller);

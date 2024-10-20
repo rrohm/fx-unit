@@ -59,11 +59,11 @@ public class FX {
   private static final String VALUE_OF_ = "Value of ";
 
   private Node node;
-  private Stage stage;
+  private final Stage stage;
 
   /**
-   * Create a new FX-Unit test helper that operates on the given node. The given
-   * node may be tested with the fluent API of fx-unit.
+   * Create a new FX-Unit test helper that operates on the given node. The given node may be tested with the fluent API
+   * of fx-unit.
    *
    * @param node
    */
@@ -98,9 +98,8 @@ public class FX {
    * @return An FXCollection wrapping the child nodes.
    */
   public FXCollection children() {
-    if (this.node instanceof Parent) {
-      final Parent parent = (Parent) this.node;
-      if (parent.getChildrenUnmodifiable().size() > 0) {
+    if (this.node instanceof Parent parent) {
+      if (!parent.getChildrenUnmodifiable().isEmpty()) {
         return new FXCollection(parent.getChildrenUnmodifiable());
       } else {
         throw new AssertionError("This parent has no children.");
@@ -130,14 +129,11 @@ public class FX {
   }
 
   /**
-   * Convenience method for delaying for a number of milliseconds – if not
-   * running on the JavaFX Application Thread. In this case, the method will not
-   * wait, in order to not slow down the UI. Hence, use this method if you think
-   * it is necessary to allow UI rendering to catch up with state changes like
-   * selection, highlighting etc.
+   * Convenience method for delaying for a number of milliseconds – if not running on the JavaFX Application Thread. In
+   * this case, the method will not wait, in order to not slow down the UI. Hence, use this method if you think it is
+   * necessary to allow UI rendering to catch up with state changes like selection, highlighting etc.
    *
-   * @param millis Milliseconds to delay, if not running on the JavaFX
-   * Application Thread.
+   * @param millis Milliseconds to delay, if not running on the JavaFX Application Thread.
    * @return The FX instance, for call chaining ("fluent API").
    */
   public FX delay(int millis) {
@@ -169,8 +165,7 @@ public class FX {
   }
 
   public FX expand() {
-    if (node instanceof TitledPane) {
-      final TitledPane titledPane = (TitledPane) node;
+    if (node instanceof TitledPane titledPane) {
       FXHelper.expand(titledPane);
     } else {
       throw new UnsupportedOperationException("Type " + this.node.getClass().getName() + " is not supported. Currently, expand() supports TitledPane and descendants only.");
@@ -179,8 +174,7 @@ public class FX {
   }
 
   public FX expand(int index) {
-    if (node instanceof Accordion) {
-      Accordion accordion = (Accordion) node;
+    if (node instanceof Accordion accordion) {
       FXHelper.expand(accordion, index);
     } else {
       throw new UnsupportedOperationException("Type " + this.node.getClass().getName() + " is not supported. Currently, expand() supports Accordion and descendants only.");
@@ -189,15 +183,13 @@ public class FX {
   }
 
   /**
-   * Execute the fire() method on the selected node, i.e., simulate a mouse
-   * click with the JavaFX API. This method takes care of firing the button on
-   * the FX application thread.
+   * Execute the fire() method on the selected node, i.e., simulate a mouse click with the JavaFX API. This method takes
+   * care of firing the button on the FX application thread.
    *
    * @return The FX instance, for call chaining ("fluent API").
    */
   public FX fire() {
-    if (node instanceof ButtonBase) {
-      ButtonBase button = (ButtonBase) node;
+    if (node instanceof ButtonBase button) {
       try {
         FXHelper.runAndWait(() -> {
           button.fire();
@@ -233,12 +225,10 @@ public class FX {
   /**
    * Assert that the selected node has a context menu and show it.
    *
-   * @return An {@link FXMenu} wrapper for fluent testing on the context menu as
-   * SUT.
+   * @return An {@link FXMenu} wrapper for fluent testing on the context menu as SUT.
    */
   public FXMenu getContextMenu() {
-    if (this.node instanceof Control) {
-      Control control = (Control) this.node;
+    if (this.node instanceof Control control) {
       ContextMenu contextMenu = control.getContextMenu();
       if (contextMenu == null) {
         throw new AssertionError("This node no context menu.");
@@ -258,13 +248,13 @@ public class FX {
   }
 
   /**
-   * Returns the node (SUT, system-under-test) that this instance operates on -
-   * must not return null, since construction of an instance fails if the node
-   * is not found.
+   * Returns the node (SUT, system-under-test) that this instance operates on - must not return null, since construction
+   * of an instance fails if the node is not found.
    *
    * @param <T>
    * @return The node that this instance operates on.
    */
+  @SuppressWarnings("unchecked")
   public <T extends Node> T getNode() {
     if (this.node == null) {
       throw new NullPointerException("This method should not return null. Please use the constructor FX(Node node) only.");
@@ -272,6 +262,7 @@ public class FX {
     return (T) this.node;
   }
 
+  @SuppressWarnings("unchecked")
   public <T extends Node> T getNode(Class<T> t) {
     if (this.node == null) {
       throw new NullPointerException("This method should not return null. Please use the constructor FX(Node node) only.");
@@ -287,8 +278,7 @@ public class FX {
    * @see AssertFX#assertHasChildren(javafx.scene.Parent, int)
    */
   public FX hasChildren(int count) {
-    if (this.node instanceof Parent) {
-      Parent parent = (Parent) this.node;
+    if (this.node instanceof Parent parent) {
       AssertFX.assertHasChildren(parent, count);
     } else {
       if (count == 0) {
@@ -302,8 +292,7 @@ public class FX {
   }
 
   /**
-   * Assert that the selected node does not have the given CSS style class
-   * assigned.
+   * Assert that the selected node does not have the given CSS style class assigned.
    *
    * @param styleClass
    * @return The FX instance, for call chaining ("fluent API").
@@ -327,21 +316,18 @@ public class FX {
   }
 
   /**
-   * Assert that the selected node is an instance of Labeled or an instance of
-   * TextInputControl and has a given value in it's text property.
+   * Assert that the selected node is an instance of Labeled or an instance of TextInputControl and has a given value in
+   * it's text property.
    *
    * @param text The text content to be tested for.
    * @return The FX instance, for call chaining ("fluent API").
-   * @see AssertFX#assertText(javafx.scene.control.TextInputControl,
-   * java.lang.String)
+   * @see AssertFX#assertText(javafx.scene.control.TextInputControl, java.lang.String)
    * @see AssertFX#assertText(javafx.scene.control.Labeled, java.lang.String)
    */
   public FX hasText(String text) {
-    if (this.node instanceof Labeled) {
-      Labeled labeled = (Labeled) this.node;
+    if (this.node instanceof Labeled labeled) {
       AssertFX.assertText(labeled, text);
-    } else if (this.node instanceof TextInputControl) {
-      TextInputControl textInputControl = (TextInputControl) this.node;
+    } else if (this.node instanceof TextInputControl textInputControl) {
       AssertFX.assertText(textInputControl, text);
     } else {
       throw new AssertionError("hasText() is only supported on Labeled/TextInputControl and descendants. Node is a " + this.node.getClass().getName());
@@ -354,12 +340,10 @@ public class FX {
    *
    * @param text The tooltip text
    * @return The FX instance, for call chaining ("fluent API").
-   * @see AssertFX#assertTooltipText(javafx.scene.control.Control,
-   * java.lang.String)
+   * @see AssertFX#assertTooltipText(javafx.scene.control.Control, java.lang.String)
    */
   public FX hasTooltipText(String text) {
-    if (this.node instanceof Control) {
-      Control control = (Control) this.node;
+    if (this.node instanceof Control control) {
       AssertFX.assertTooltipText(control, text);
     } else {
       throw new AssertionError("hasTooltipText() is only supported on Control and descendants. Node is a " + this.node.getClass().getName());
@@ -390,8 +374,8 @@ public class FX {
   }
 
   /**
-   * Assert that the given node is editable, i.e., it is a descendant of
-   * TextInputControl and it's "editable" property is true;
+   * Assert that the given node is editable, i.e., it is a descendant of TextInputControl and it's "editable" property
+   * is true;
    *
    * @see AssertFX#assertEditable(javafx.scene.Node)
    * @return The FX instance, for call chaining ("fluent API").
@@ -407,8 +391,7 @@ public class FX {
    * @return The FX instance, for call chaining ("fluent API").
    */
   public FX isEmpty() {
-    if (this.node instanceof Parent) {
-      Parent parent = (Parent) this.node;
+    if (this.node instanceof Parent parent) {
       AssertFX.assertHasChildren(parent, 0);
     } else {
       LOG.log(Level.WARNING, "{0} is not an instance of Parent, cannot have child nodes.", this.node);
@@ -431,14 +414,12 @@ public class FX {
   private static final Logger LOG = Logger.getLogger(FX.class.getName());
 
   /**
-   * Assert that the selected node is an instance of Parent and has any
-   * children.
+   * Assert that the selected node is an instance of Parent and has any children.
    *
    * @return The FX instance, for call chaining ("fluent API").
    */
   public FX isNotEmpty() {
-    if (this.node instanceof Parent) {
-      final Parent parent = (Parent) this.node;
+    if (this.node instanceof Parent parent) {
       if (parent.getChildrenUnmodifiable().isEmpty()) {
         throw new AssertionError("This parent has no children, but should not be empty.");
       }
@@ -467,8 +448,7 @@ public class FX {
    * @see AssertFX#assertNotSelected(javafx.scene.control.ToggleButton)
    */
   public FX isNotSelected() {
-    if (this.node instanceof ToggleButton) {
-      ToggleButton toggleButton = (ToggleButton) this.node;
+    if (this.node instanceof ToggleButton toggleButton) {
       AssertFX.assertNotSelected(toggleButton);
     } else {
       throw new AssertionError(this.node + " is not an instance of ToggleButton, does not support isSelected().");
@@ -506,15 +486,13 @@ public class FX {
   }
 
   /**
-   * Assert that the selected node is an instance of ToggleButton and is
-   * selected.
+   * Assert that the selected node is an instance of ToggleButton and is selected.
    *
    * @return The FX instance, for call chaining ("fluent API").
    * @see AssertFX#assertSelected(javafx.scene.control.ToggleButton)
    */
   public FX isSelected() {
-    if (this.node instanceof ToggleButton) {
-      ToggleButton toggleButton = (ToggleButton) this.node;
+    if (this.node instanceof ToggleButton toggleButton) {
       AssertFX.assertSelected(toggleButton);
     } else {
       throw new AssertionError(this.node + " is not an instance of ToggleButton, does not support isSelected().");
@@ -545,8 +523,7 @@ public class FX {
   }
 
   /**
-   * Look up a node by ID selector from the current testing stage. Throws an
-   * AssertionError if the node is not found.
+   * Look up a node by ID selector from the current testing stage. Throws an AssertionError if the node is not found.
    *
    * @param id The node ID selector.
    * @return The node.
@@ -580,8 +557,8 @@ public class FX {
   }
 
   /**
-   * Show the given node on a new testing stage. Use this method as a starting
-   * point for testing a node on a new testing stage.
+   * Show the given node on a new testing stage. Use this method as a starting point for testing a node on a new testing
+   * stage.
    *
    * @param node
    * @return An FX instance.
@@ -596,8 +573,7 @@ public class FX {
   }
 
   /**
-   * Assert that the selected node has an item count > 0. Supported are
-   * instances or descendants of:
+   * Assert that the selected node has an item count > 0. Supported are instances or descendants of:
    * <ul>
    * <li><code>javafx.scene.control.ChoiceBox</code></li>
    * <li><code>javafx.scene.control.ComboBox</code></li>
@@ -608,17 +584,13 @@ public class FX {
    * @return The FX instance, for call chaining ("fluent API").
    */
   public FX hasItems() {
-    if (this.node instanceof ChoiceBox) {
-      ChoiceBox choiceBox = (ChoiceBox) this.node;
+    if (this.node instanceof ChoiceBox<?> choiceBox) {
       AssertFX.assertHasItems(choiceBox);
-    } else if (this.node instanceof ComboBox) {
-      ComboBox comboBox = (ComboBox) this.node;
+    } else if (this.node instanceof ComboBox<?> comboBox) {
       AssertFX.assertHasItems(comboBox);
-    } else if (this.node instanceof ListView) {
-      ListView listView = (ListView) this.node;
+    } else if (this.node instanceof ListView<?> listView) {
       AssertFX.assertHasItems(listView);
-    } else if (this.node instanceof TableView) {
-      TableView tableView = (TableView) this.node;
+    } else if (this.node instanceof TableView<?> tableView) {
       AssertFX.assertHasItems(tableView);
     } else {
       throw new UnsupportedOperationException("Type " + this.node.getClass().getName() + " is not supported. Currently, hasItems() supports ChoiceBox, ComboBox, ListView and TableView only.");
@@ -627,20 +599,15 @@ public class FX {
   }
 
   public FX hasItems(int count) {
-    if (this.node instanceof ChoiceBox) {
-      ChoiceBox choiceBox = (ChoiceBox) this.node;
+    if (this.node instanceof ChoiceBox<?> choiceBox) {
       AssertFX.assertHasItems(choiceBox, count);
-    } else if (this.node instanceof ComboBox) {
-      ComboBox comboBox = (ComboBox) this.node;
+    } else if (this.node instanceof ComboBox<?> comboBox) {
       AssertFX.assertHasItems(comboBox, count);
-    } else if (this.node instanceof ListView) {
-      ListView listView = (ListView) this.node;
+    } else if (this.node instanceof ListView<?> listView) {
       AssertFX.assertHasItems(listView, count);
-    } else if (this.node instanceof TableView) {
-      TableView tableView = (TableView) this.node;
+    } else if (this.node instanceof TableView<?> tableView) {
       AssertFX.assertHasItems(tableView, count);
-    } else if (this.node instanceof TreeTableView) {
-      TreeTableView treeTableView = (TreeTableView) this.node;
+    } else if (this.node instanceof TreeTableView<?> treeTableView) {
       AssertFX.assertHasItems(treeTableView, count);
     } else {
       throw new UnsupportedOperationException("Type " + this.node.getClass().getName() + " is not supported. Currently, hasItems() supports ChoiceBox, ComboBox, ListView, TableView and TreeTableView only.");
@@ -652,8 +619,7 @@ public class FX {
     if (!id.startsWith("#")) {
       id = "#".concat(id);
     }
-    if (this.node.getScene().getWindow() instanceof ContextMenu) {
-      ContextMenu contextMenu = (ContextMenu) this.node.getScene().getWindow();
+    if (this.node.getScene().getWindow() instanceof ContextMenu contextMenu) {
 
       boolean found = false;
       id = id.substring(1);
@@ -675,6 +641,7 @@ public class FX {
 
   public <T> FX hasValue(T value) {
     if (this.node instanceof ChoiceBox) {
+      @SuppressWarnings("unchecked")
       ChoiceBox<T> choiceBox = (ChoiceBox<T>) this.node;
       if (value == null) {
         if (choiceBox.getValue() != null) {
@@ -804,8 +771,7 @@ public class FX {
   }
 
   /**
-   * Move the mouse to the selected node, i.e., get the screen rectangle bounds
-   * and move the mouse to the center of it.
+   * Move the mouse to the selected node, i.e., get the screen rectangle bounds and move the mouse to the center of it.
    *
    * @return The FX instance, for call chaining ("fluent API").
    */
@@ -847,6 +813,7 @@ public class FX {
    */
   public <T> FX select(int index) {
     if (this.node instanceof ChoiceBox) {
+      @SuppressWarnings("unchecked")
       ChoiceBox<T> choiceBox = (ChoiceBox<T>) this.node;
       if (choiceBox.getItems().size() <= index) {
         throw new IndexOutOfBoundsException(this.node.toString() + " has only " + choiceBox.getItems().size() + " items.");
@@ -860,6 +827,7 @@ public class FX {
         throw new RuntimeException(ex);
       }
     } else if (this.node instanceof ListView) {
+      @SuppressWarnings("unchecked")
       ListView<T> listView = (ListView<T>) this.node;
       if (listView.getItems().size() <= index) {
         throw new IndexOutOfBoundsException(this.node.toString() + " has only " + listView.getItems().size() + " items.");
@@ -873,6 +841,7 @@ public class FX {
         throw new RuntimeException(ex);
       }
     } else if (this.node instanceof TableView) {
+      @SuppressWarnings("unchecked")
       TableView<T> tableView = (TableView<T>) this.node;
       if (tableView.getItems().size() <= index) {
         throw new IndexOutOfBoundsException(this.node.toString() + " has only " + tableView.getItems().size() + " items.");
@@ -886,6 +855,7 @@ public class FX {
         throw new RuntimeException(ex);
       }
     } else if (this.node instanceof TreeTableView) {
+      @SuppressWarnings("unchecked")
       TreeTableView<T> treeTableView = (TreeTableView<T>) this.node;
       if (treeTableView.getRoot() == null) {
         throw new IndexOutOfBoundsException("TreeTableView has no root node, i.e., no data.");
@@ -905,8 +875,7 @@ public class FX {
   }
 
   /**
-   * Set the given text to the selected Labeld or TextInputControl and assert
-   * that it has been set successfully.
+   * Set the given text to the selected Labeld or TextInputControl and assert that it has been set successfully.
    *
    * @param string The text to set and assert.
    * @return The FX instance, for call chaining ("fluent API").
@@ -927,6 +896,7 @@ public class FX {
 
   public <T> FX setValue(T value) {
     if (this.node instanceof ChoiceBox) {
+      @SuppressWarnings("unchecked")
       ChoiceBox<T> choiceBox = (ChoiceBox<T>) this.node;
       choiceBox.setValue(value);
       if (value == null) {

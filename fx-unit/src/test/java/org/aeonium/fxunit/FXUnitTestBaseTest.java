@@ -72,7 +72,7 @@ public class FXUnitTestBaseTest {
   @Test
   public void testGetRoot() {
     System.out.println("getRoot");
-    FXUnitTestBase instance = new FXUnitTestBaseImpl();
+    FXUnitTestBase<?> instance = new FXUnitTestBaseImpl();
     Parent result = instance.getRoot();
     assertNull(result);
   }
@@ -83,7 +83,7 @@ public class FXUnitTestBaseTest {
   @Test
   public void testGetController() {
     System.out.println("getController");
-    FXUnitTestBase instance = new FXUnitTestBaseImpl();
+    FXUnitTestBase<?> instance = new FXUnitTestBaseImpl();
     Object result = instance.getController();
     assertNull(result);
   }
@@ -94,7 +94,7 @@ public class FXUnitTestBaseTest {
   @Test
   public void testGetStage() {
     System.out.println("getStage");
-    FXUnitTestBase instance = new FXUnitTestBaseImpl();
+    FXUnitTestBase<?> instance = new FXUnitTestBaseImpl();
     Stage result = instance.getStage();
     assertNull(result);
   }
@@ -107,12 +107,12 @@ public class FXUnitTestBaseTest {
     System.out.println("show");
     Assertions.assertThrows(NullPointerException.class, () -> {
       Node node = null;
-      FXUnitTestBase instance = new FXUnitTestBaseImpl();
+      FXUnitTestBase<?> instance = new FXUnitTestBaseImpl();
       instance.show(node);
     });
   }
 
-  public class FXUnitTestBaseImpl extends FXUnitTestBase {
+  public class FXUnitTestBaseImpl extends FXUnitTestBase<Object> {
     // no op
   }
 

@@ -173,7 +173,7 @@ public class AssertFX {
    * @param choiceBox The control
    * @param itemCount The item count, must not be negative
    */
-  public static void assertHasItems(ChoiceBox choiceBox, int itemCount) {
+  public static void assertHasItems(ChoiceBox<?> choiceBox, int itemCount) {
     if (choiceBox == null) {
       throw new AssertionError(I18N.getString(NODE_IS_NULL));
     }
@@ -196,7 +196,7 @@ public class AssertFX {
    * @param comboBox The control
    * @param itemCount The item count, must not be negative
    */
-  public static void assertHasItems(ComboBox comboBox, int itemCount) {
+  public static void assertHasItems(ComboBox<?> comboBox, int itemCount) {
     if (comboBox == null) {
       throw new AssertionError(I18N.getString(NODE_IS_NULL));
     }
@@ -219,7 +219,7 @@ public class AssertFX {
    * @param listView The control
    * @param itemCount The item count, must not be negative
    */
-  public static void assertHasItems(ListView listView, int itemCount) {
+  public static void assertHasItems(ListView<?> listView, int itemCount) {
     if (listView == null) {
       throw new AssertionError(I18N.getString(NODE_IS_NULL));
     }
@@ -242,7 +242,7 @@ public class AssertFX {
    * @param tableView The control
    * @param itemCount The item count, must not be negative
    */
-  public static void assertHasItems(TableView tableView, int itemCount) {
+  public static void assertHasItems(TableView<?> tableView, int itemCount) {
     if (tableView == null) {
       throw new AssertionError(I18N.getString(NODE_IS_NULL));
     }
@@ -259,7 +259,7 @@ public class AssertFX {
     }
   }
   
-  public static void assertHasItems(TreeTableView treetableView, int itemCount) {
+  public static void assertHasItems(TreeTableView<?> treetableView, int itemCount) {
     if (treetableView == null) {
       throw new AssertionError(I18N.getString(NODE_IS_NULL));
     }
@@ -286,7 +286,7 @@ public class AssertFX {
    *
    * @param choiceBox The control
    */
-  public static void assertHasItems(ChoiceBox choiceBox) {
+  public static void assertHasItems(ChoiceBox<?> choiceBox) {
     if (choiceBox == null) {
       throw new AssertionError(I18N.getString(NODE_IS_NULL));
     }
@@ -305,7 +305,7 @@ public class AssertFX {
    *
    * @param comboBox The control
    */
-  public static void assertHasItems(ComboBox comboBox) {
+  public static void assertHasItems(ComboBox<?> comboBox) {
     if (comboBox == null) {
       throw new AssertionError(I18N.getString(NODE_IS_NULL));
     }
@@ -324,7 +324,7 @@ public class AssertFX {
    *
    * @param listView The control
    */
-  public static void assertHasItems(ListView listView) {
+  public static void assertHasItems(ListView<?> listView) {
     if (listView == null) {
       throw new AssertionError(I18N.getString(NODE_IS_NULL));
     }
@@ -343,7 +343,7 @@ public class AssertFX {
    *
    * @param tableView The control
    */
-  public static void assertHasItems(TableView tableView) {
+  public static void assertHasItems(TableView<?> tableView) {
     if (tableView == null) {
       throw new AssertionError(I18N.getString(NODE_IS_NULL));
     }

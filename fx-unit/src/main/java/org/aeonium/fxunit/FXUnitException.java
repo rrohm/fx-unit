@@ -26,6 +26,8 @@ package org.aeonium.fxunit;
  */
 public class FXUnitException extends RuntimeException {
 
+  private static final long serialVersionUID = 1L;
+
   /**
    * Create a new FXUnitException.
    */

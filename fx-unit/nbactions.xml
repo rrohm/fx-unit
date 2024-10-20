@@ -65,5 +65,14 @@
                 <skipTests>true</skipTests>
             </properties>
         </action>
+        <action>
+            <actionName>test</actionName>
+            <packagings>
+                <packaging>*</packaging>
+            </packagings>
+            <goals>
+                <goal>surefire:test</goal>
+            </goals>
+        </action>
                 
     </actions>
